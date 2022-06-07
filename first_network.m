@@ -37,6 +37,9 @@ for i = 1:length(comps)
     x.(comps{i}).add('prinz/CalciumMech');
 end
 
+% Disable show calcium
+x.pref.show_Ca = 0;
+
 % Adding Synapses
 x.connect('AB','PY','prinz/Chol','gmax',3);
 x.connect('AB','LP','prinz/Glut','gmax',30);
