@@ -102,12 +102,14 @@ self.output_type = 0;
 
 
 % [V, Ca, ~, currents] = self.integrate;
-max_Ca = max(max(Ca(:,1:N)));
+if (Ca)
+  max_Ca = max(max(Ca(:,1:N)));
+end
 
 % process the voltage
 
 time = 1e-3 * self.dt * (1:size(V,1));
-size(time)
+% size(time)
 
 
 a = 1;

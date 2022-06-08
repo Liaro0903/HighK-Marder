@@ -46,7 +46,7 @@ for i = 1:length(comps)
 end
 
 % Simulation Time
-x0.t_end = 5000;
+x0.t_end = 20000;
 
 % Disable show calcium
 x0.pref.show_Ca = 0;
@@ -175,9 +175,10 @@ x1.snapshot('initial')
 % integrate with output_type 2
 x1.output_type = 2;
 results_and_spiketimes = x1.integrate;
-AB_spikes = results_and_spiketimes.AB.spiketimes;
-LP_spikes = results_and_spiketimes.LP.spiketimes;
-PY_spikes = results_and_spiketimes.PY.spiketimes;
+filter_time = 100000;
+AB_spikes = filter_spike_times(results_and_spiketimes.AB.spiketimes, filter_time);
+LP_spikes = filter_spike_times(results_and_spiketimes.LP.spiketimes, filter_time);
+PY_spikes = filter_spike_times(results_and_spiketimes.PY.spiketimes, filter_time);
 
 if isempty(AB_spikes)
   neuronstates(gbar_scale, 1) = 'silent';
