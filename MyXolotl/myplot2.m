@@ -4,7 +4,8 @@
 % 3. Got rid of comp_names for now
 % 4. Plot your own V, Ca, currents (so for example if you want to combine 2 V traces);
 
-function myplot2(self, fig_title, V, Ca, currents)
+% function myplot2(self, fig_title, V, Ca, currents)
+function myplot2(self, fig_title, V)
 
 % if nargin == 1
 %   comp_names = self.find('compartment');
@@ -33,6 +34,8 @@ self.output_type = 0;
     self.handles.ax(i) = subplot(N,1,i); hold on
     self.handles.ax(i).YLim = [-80 50];
   end
+
+  sgtitle(fig_title);
 
   warning('off')
   try
@@ -102,9 +105,9 @@ self.output_type = 0;
 
 
 % [V, Ca, ~, currents] = self.integrate;
-if (Ca)
-  max_Ca = max(max(Ca(:,1:N)));
-end
+% if (Ca)
+%   max_Ca = max(max(Ca(:,1:N)));
+% end
 
 % process the voltage
 
@@ -117,7 +120,7 @@ for i = 1:N
   cond_names = self.(comp_names{i}).find('conductance');
   this_V = V(:,find(strcmp(comp_names{i},self.Children)));
   z = a + length(cond_names) - 1;
-  this_I = currents(:,a:z);
+  % this_I = currents(:,a:z);
   a = z + 1;
 
   
@@ -126,15 +129,15 @@ for i = 1:N
   if self.pref.plot_color
 
 
-    curr_index = xolotl.contributingCurrents(this_V, this_I);
+    % curr_index = xolotl.contributingCurrents(this_V, this_I);
     
-    for j = 1:size(this_I,2)
-      Vplot = this_V;
-      Vplot(curr_index ~= j) = NaN;
-      self.handles.plots(i).ph(j).XData = time;
-      self.handles.plots(i).ph(j).YData = Vplot;
+    % for j = 1:size(this_I,2)
+    %   Vplot = this_V;
+    %   Vplot(curr_index ~= j) = NaN;
+    %   self.handles.plots(i).ph(j).XData = time;
+    %   self.handles.plots(i).ph(j).YData = Vplot;
 
-    end
+    % end
   else
 
     self.handles.plots(i).ph(1).Color = 'k';
@@ -144,15 +147,15 @@ for i = 1:N
 
 
   % and now show calcium
-  if self.pref.show_Ca
-    self.handles.Ca_trace(i).XData = time;
-    self.handles.Ca_trace(i).YData = Ca(:,i);
-    if isnan(max_Ca)
-      set(self.handles.ax(i),'YLim',[0 1])
-    else
-      set(self.handles.ax(i),'YLim',[0 max_Ca])
-    end
-  end
+  % if self.pref.show_Ca
+  %   self.handles.Ca_trace(i).XData = time;
+  %   self.handles.Ca_trace(i).YData = Ca(:,i);
+  %   if isnan(max_Ca)
+  %     set(self.handles.ax(i),'YLim',[0 1])
+  %   else
+  %     set(self.handles.ax(i),'YLim',[0 max_Ca])
+  %   end
+  % end
 
 
 end
