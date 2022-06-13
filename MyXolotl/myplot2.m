@@ -1,19 +1,24 @@
 % Features:
 % 1. Plot figure window title
 % 2. Plot figure subplot title
-% 3. Got rid of comp_names for now
-% 4. Plot your own V, Ca, currents (so for example if you want to combine 2 V traces);
+% 3. Modified comp_names with the current number of parameters
+% 4. Plot your own V, Ca, currents
+%      Example 1: if you want to combine 2 V traces
+%      Example 2: if you want to plot voltage traces that are not from the same xolotl model
+%      For now, I turned off Ca, currents, color, and voltage clamp plottings 6/13/22  
 
 % function myplot2(self, fig_title, V, Ca, currents)
-function myplot2(self, fig_title, V)
+function myplot2(self, fig_title, V, comp_names)
 
 % if nargin == 1
-%   comp_names = self.find('compartment');
-% elseif ~iscell(comp_names)
-%   comp_names = {comp_names};
-% end
+if nargin == 3
+  comp_names = self.find('compartment');
+elseif ~iscell(comp_names)
+  comp_names = {comp_names};
+end
 
-comp_names = self.find('compartment');
+% comp_names = self.find('compartment');
+% comp_names = {'AB80', 'PD80', 'AB70', 'PD70'};
 
 N = length(comp_names);
 c = lines(100);
@@ -49,40 +54,40 @@ self.output_type = 0;
   for i = 1:N
 
     if self.pref.show_Ca
-      yyaxis(self.handles.ax(i),'left')
+      % yyaxis(self.handles.ax(i),'left')
     end
 
-    cond_names = self.(comp_names{i}).find('conductance');
+    % cond_names = self.(comp_names{i}).find('conductance');
 
     if self.pref.plot_color
 
-      for j = 1:length(cond_names)
-        self.handles.plots(i).ph(j) = plot(self.handles.ax(i),NaN,NaN, 'Color', c(j,:),'LineWidth',2);
-      end
+      % for j = 1:length(cond_names)
+      %   self.handles.plots(i).ph(j) = plot(self.handles.ax(i),NaN,NaN, 'Color', c(j,:),'LineWidth',2);
+      % end
     else
       self.handles.plots(i).ph = plot(self.handles.ax(i),NaN,NaN, 'Color', 'k','LineWidth',1.5);
     end
 
     xlabel(self.handles.ax(i),'Time (s)')
-    if isnan(sum(self.V_clamp(:,i)))
+    % if isnan(sum(self.V_clamp(:,i)))
       ylabel(self.handles.ax(i),['V_{ ' comp_names{i} '} (mV)'])
-    else
-      ylabel(self.handles.ax(i),['I_{clamp, ' comp_names{i} '} (nA)'])
-    end
+    % else
+      % ylabel(self.handles.ax(i),['I_{clamp, ' comp_names{i} '} (nA)'])
+    % end
 
     % make calcium dummy plots
 
     if self.pref.show_Ca
-      yyaxis(self.handles.ax(i),'right')
-      self.handles.Ca_trace(i) = plot(self.handles.ax(i),NaN,NaN,'Color','k');
-      ylabel(self.handles.ax(i),['[Ca^2^+]_{' comp_names{i} '} (uM)'] )
+      % yyaxis(self.handles.ax(i),'right')
+      % self.handles.Ca_trace(i) = plot(self.handles.ax(i),NaN,NaN,'Color','k');
+      % ylabel(self.handles.ax(i),['[Ca^2^+]_{' comp_names{i} '} (uM)'] )
     end
 
     if self.pref.show_Ca & self.pref.plot_color
-      lh = legend([self.handles.plots(i).ph self.handles.Ca_trace(i)],[cond_names; '[Ca]']);
-      lh.Location = 'eastoutside';
+      % lh = legend([self.handles.plots(i).ph self.handles.Ca_trace(i)],[cond_names; '[Ca]']);
+      % lh.Location = 'eastoutside';
 
-      self.handles.lh = lh;
+      % self.handles.lh = lh;
     end
 
     for j = 1:length(self.handles.plots(i).ph)
@@ -117,18 +122,18 @@ time = 1e-3 * self.dt * (1:size(V,1));
 
 a = 1;
 for i = 1:N
-  cond_names = self.(comp_names{i}).find('conductance');
-  this_V = V(:,find(strcmp(comp_names{i},self.Children)));
-  z = a + length(cond_names) - 1;
-  % this_I = currents(:,a:z);
-  a = z + 1;
-
-  
+  if nargin == 3 % to able to plot voltage traces from a different xolotl model
+    cond_names = self.(comp_names{i}).find('conductance');
+    this_V = V(:,find(strcmp(comp_names{i},self.Children)));
+    z = a + length(cond_names) - 1;
+    % this_I = currents(:,a:z);
+    a = z + 1;
+  else
+    this_V = V(:,i);
+  end 
 
   % show voltage
   if self.pref.plot_color
-
-
     % curr_index = xolotl.contributingCurrents(this_V, this_I);
     
     % for j = 1:size(this_I,2)
