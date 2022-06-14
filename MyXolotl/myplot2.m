@@ -30,10 +30,11 @@ self.output_type = 0;
   if N == 1
     y = 500;
   else
-    y = 900;
+    % y = 900;
+    y = 1200;
   end
   % self.handles.fig = figure('outerposition',[0 0 1200 y],'PaperUnits','points','PaperSize',[1200 y]); hold on
-  self.handles.fig = figure('outerposition',[0 0 1200 y],'PaperUnits','points','PaperSize',[1200 y], 'Name', fig_title); hold on
+  self.handles.fig = figure('outerposition',[0 0 1800 y],'PaperUnits','points','PaperSize',[1200 y], 'Name', fig_title); hold on
 
   for i = 1:N
     self.handles.ax(i) = subplot(N,1,i); hold on
@@ -117,7 +118,7 @@ self.output_type = 0;
 % process the voltage
 
 time = 1e-3 * self.dt * (1:size(V,1));
-% size(time)
+% size(time);
 
 
 a = 1;
@@ -166,10 +167,10 @@ for i = 1:N
 end
 
 
-if strcmp(self.handles.ax(1).XLimMode,'auto')
+% if strcmp(self.handles.ax(1).XLimMode,'auto')
   set(self.handles.ax(1),'XLim',[0 max(time)]);
   self.handles.ax(1).XLimMode = 'auto';
-end
+% end
 
 try
   figlib.pretty('PlotLineWidth',1,'LineWidth',1);
