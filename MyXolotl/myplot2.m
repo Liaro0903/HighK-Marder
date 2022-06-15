@@ -34,7 +34,7 @@ self.output_type = 0;
     y = 1200;
   end
   % self.handles.fig = figure('outerposition',[0 0 1200 y],'PaperUnits','points','PaperSize',[1200 y]); hold on
-  self.handles.fig = figure('outerposition',[0 0 1800 y],'PaperUnits','points','PaperSize',[1200 y], 'Name', fig_title); hold on
+  self.handles.fig = figure('outerposition',[0 0 1800 y],'PaperUnits','points','PaperSize',[1200 y], 'Name', fig_title{1}); hold on
 
   for i = 1:N
     self.handles.ax(i) = subplot(N,1,i); hold on
