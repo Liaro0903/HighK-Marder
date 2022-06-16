@@ -157,13 +157,13 @@ x2_title = {
   'Initial gmax: AB.NaV * 0 | PD.KCa * 0',
   ['Synaptic gmax AB-PD: ', int2str(base * 4), ' | gmax PD-AB: ', int2str(base)],
   ['Bursting freq before: ', num2str(B_freq_before), ' | Bursting freq after: ', num2str(B_freq_after)],
-  '-70 change of gmax: PD.Acurrent * 2 | AB.Acurrent * 2',
+  'change of gmax at -70mV: PD.Acurrent * 2 | AB.Acurrent * 2',
 };
 x2.myplot2(x2_title, all_ABPD_V, {'AB80', 'PD80', 'AB70', 'PD70'});
 x2_filename = strcat('./', dir_title, '/', int2str(model), '- ', int2str(base), '.png');
 saveas(x2.handles.fig, x2_filename);
 
-% close all;
+close all;
 end % 3 LOOP THROUGH DIFFERENT SYNAPTIC GMAX
 end % 2 LOOP THROUGH AB/PD MODELS 1-5
 
