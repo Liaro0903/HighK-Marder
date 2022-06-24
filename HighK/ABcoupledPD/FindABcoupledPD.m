@@ -83,14 +83,14 @@ x2 = copy(x1);
 
 % Plot
 % Base case
-pot0    = -80;  pot_dV = 10; 
-leak_E0 = -50; leak_dV = 5;
+pot0    = -80;  pot_dV = 24; 
+leak_E0 = -50; leak_dV = pot_dV / 2;
 
 all_ABPD_V = zeros(x0.t_end * 10, 4);
 B_freq_before = 0;
 B_freq_after = 0;
 
-for pot = -80:pot_dV:-70
+for pot = -80:pot_dV:-56
   steps = (pot - pot0) / pot_dV;
   leak_E = leak_E0 + leak_dV * steps;
 
@@ -124,17 +124,17 @@ for pot = -80:pot_dV:-70
     [IBI, B_freq] = burstinginterval(filter_spike_times(results_and_spiketimes.PD.spiketimes, 10000));
     B_freq_before = B_freq;
   end
-  if pot == -70 % integrate with the change of gbars
+  if pot == -56 % integrate with the change of gbars
     x2.PD.ACurrent.gbar = x2.PD.ACurrent.gbar * 2;
     % x2.AB.ACurrent.gbar = x2.AB.ACurrent.gbar * 1.67;
-    x2.AB.ACurrent.gbar = x2.AB.ACurrent.gbar * 2;
+    % x2.AB.ACurrent.gbar = x2.AB.ACurrent.gbar * 2;
     % x2.AB.CaS.gbar = x2.AB.CaS.gbar - 20;
     % x2.AB.CaT.gbar = x2.AB.CaT.gbar - 5;
     results_and_spiketimes = x2.integrate;
     all_ABPD_V(50001:100000, 3) = results_and_spiketimes.AB.V;
     all_ABPD_V(50001:100000, 4) = results_and_spiketimes.PD.V;
     [IBI, B_freq] = burstinginterval(filter_spike_times(results_and_spiketimes.PD.spiketimes, 10000));
-    B_freq_after = B_freq;
+    B_freq_after = B_freq; 
   end
   
   % Categorize neuron state
@@ -157,7 +157,7 @@ x2_title = {
   'Initial gmax: AB.NaV * 0 | PD.KCa * 0',
   ['Synaptic gmax AB-PD: ', int2str(base * 4), ' | gmax PD-AB: ', int2str(base)],
   ['Bursting freq before: ', num2str(B_freq_before), ' | Bursting freq after: ', num2str(B_freq_after)],
-  'change of gmax at -70mV: PD.Acurrent * 2 | AB.Acurrent * 2',
+  'Change of gmax at -56mV: PD.Acurrent * 2',
 };
 x2.myplot2(x2_title, all_ABPD_V, {'AB80', 'PD80', 'AB70', 'PD70'});
 x2_filename = strcat('./', dir_title, '/', int2str(model), '- ', int2str(base), '.png');

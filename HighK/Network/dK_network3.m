@@ -1,5 +1,7 @@
 % This will try to simulate three phases with different currents
 
+% TODO: Prob try the mesh thing from parallel simulation demo
+
 %% Reset
 clear;
 close all;
@@ -173,63 +175,23 @@ x1.snapshot('initial')
 % x1.reset('initial');
 
 % integrate with output_type 2
-x1.output_type = 2;
-results_and_spiketimes = x1.integrate;
-filter_time = 100000;
-AB_spikes = filter_spike_times(results_and_spiketimes.AB.spiketimes, filter_time);
-LP_spikes = filter_spike_times(results_and_spiketimes.LP.spiketimes, filter_time);
-PY_spikes = filter_spike_times(results_and_spiketimes.PY.spiketimes, filter_time);
+% x1.output_type = 2;
+% results_and_spiketimes = x1.integrate;
+% filter_time = 100000;
+% AB_spikes = filter_spike_times(results_and_spiketimes.AB.spiketimes, filter_time);
+% LP_spikes = filter_spike_times(results_and_spiketimes.LP.spiketimes, filter_time);
+% PY_spikes = filter_spike_times(results_and_spiketimes.PY.spiketimes, filter_time);
 
-if isempty(AB_spikes)
-  neuronstates(gbar_scale, 1) = 'silent';
-  neuronstates(gbar_scale, 2) = 'silent';
-else
-  if (diff2000(AB_spikes)) 
-    neuronstates(gbar_scale, 1) = 'bursting';
-  else
-    neuronstates(gbar_scale, 1) = 'tonic';
-  end
-
-  if (mycluster(AB_spikes))
-    neuronstates(gbar_scale, 2) = 'bursting';
-  else
-    neuronstates(gbar_scale, 2) = 'tonic';
-  end
-end
-
-if isempty(LP_spikes)
-  neuronstates(gbar_scale, 3) = 'silent';
-  neuronstates(gbar_scale, 4) = 'silent';
-else
-  if (diff2000(LP_spikes)) 
-    neuronstates(gbar_scale, 3) = 'bursting';
-  else
-    neuronstates(gbar_scale, 3) = 'tonic';
-  end
-
-  if (mycluster(LP_spikes))
-    neuronstates(gbar_scale, 4) = 'bursting';
-  else
-    neuronstates(gbar_scale, 4) = 'tonic';
-  end
-end
-
-if isempty(PY_spikes)
-  neuronstates(gbar_scale, 5) = 'silent';
-  neuronstates(gbar_scale, 6) = 'silent';
-else
-  if (diff2000(PY_spikes)) 
-    neuronstates(gbar_scale, 5) = 'bursting';
-  else
-    neuronstates(gbar_scale, 5) = 'tonic';
-  end
-
-  if (mycluster(PY_spikes))
-    neuronstates(gbar_scale, 6) = 'bursting';
-  else
-    neuronstates(gbar_scale, 6) = 'tonic';
-  end
-end
+% New syntax for categorizing, but I just added here haven't tested yet
+% ABPD
+% neuronstates(gbar_scale, 1) = diff2000(AB_spikes);
+% neuronstates(gbar_scale, 2) = mycluster(AB_spikes);
+% LP
+% neuronstates(gbar_scale, 3) = diff2000(LP_spikes);
+% neuronstates(gbar_scale, 4) = mycluster(LP_spikes);
+% PY
+% neuronstates(gbar_scale, 5) = diff2000(PY_spikes);
+% neuronstates(gbar_scale, 6) = mycluster(PY_spikes);
 
 x1.reset('initial');
 
