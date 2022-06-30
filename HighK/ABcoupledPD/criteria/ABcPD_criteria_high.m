@@ -7,7 +7,7 @@ function qualifies = ABcPD_criteria_high(x)
   [AB_isBursting, PD_isBursting, ~, ~] = meta_criteria(x, "bursting", "bursting");
   disp([num2str(AB_isBursting), ' | ', num2str(PD_isBursting)]);
   x.myplot('hi');
-  if (PD_isBursting)
+  if (AB_isBursting && PD_isBursting)
     x = setPotential(x, -80, 24, ["AB" "PD"]);
     [AB_isBursting, PD_isBursting, ~, ~] = meta_criteria(x, "bursting", "bursting");
     if (AB_isBursting && PD_isBursting)
