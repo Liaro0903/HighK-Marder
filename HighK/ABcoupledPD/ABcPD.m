@@ -28,7 +28,7 @@ for i = 1:length(conds)
     x0.PD.add("ian/ACurrent", 'gbar', gbars(model, i));
   else
     if (string(conds{i}) ~= "prinz/NaV")
-      x0.AB.add(conds{i}, 'gbar', gbars(model, i))
+      x0.AB.add(conds{i}, 'gbar', gbars(model, i));
     end
     x0.PD.add(conds{i}, 'gbar', gbars(model, i));
   end

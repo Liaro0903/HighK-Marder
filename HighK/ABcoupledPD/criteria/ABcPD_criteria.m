@@ -1,4 +1,4 @@
-function qualifies = ABcoupledPD_criteria(x)
+function qualifies = ABcPD_criteria(x)
   arguments
     x (1,1) xolotl
   end
