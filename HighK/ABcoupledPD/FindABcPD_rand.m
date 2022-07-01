@@ -7,7 +7,7 @@ x = xolotl;
 x = PD(x, 'PD', 1, 10000, 0.12);
 x = PD(x, 'AB', 1, 10000, 0.0628);
 x.AB.NaV.destroy();
-x = setPotential(x, -80, 24, ["AB" "PD"])
+x = setPotential(x, -80, 24, ["AB" "PD"]);
 
 % 2) Do search
 p = xfind;
