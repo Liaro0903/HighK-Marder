@@ -1,44 +1,15 @@
 clear;
 close all;
 
+
+% 1) Initial setup
 x = xolotl;
+x = PD(x, 'PD', 1, 10000, 0.12);
+x = PD(x, 'AB', 1, 10000, 0.0628);
+x.AB.NaV.destroy();
+x = setPotential(x, -80, 24, ["AB" "PD"])
 
-% AB and PD
-x.add('compartment', 'AB', 'A', 0.0628);
-x.add('compartment', 'PD', 'A', 0.12);
-
-% Adding conductances
-conds = {
-  'prinz/NaV', 'prinz/CaT', 'prinz/CaS', ...
-  'prinz/ACurrent', 'prinz/KCa', 'prinz/Kd', ...
-  'prinz/HCurrent', 'Leak'
-};
-
-gbars_raw = readmatrix('gbars.csv');
-gbars = gbars_raw(1:5, :);
-
-for i = 1:length(conds)
-  if (string(conds{i}) ~= "prinz/NaV")
-    x.AB.add(conds{i});
-  end
-  x.PD.add(conds{i});
-end
-
-% Adding leak E
-x.AB.Leak.E = -50; % mV
-x.PD.Leak.E = -50; % mV
-
-% Adding Calcium Dynamics
-x.AB.add('prinz/CalciumMech');
-x.PD.add('prinz/CalciumMech');
-
-% Debug
-x.pref.show_Ca = 0;
-% x.plot();
-% x.output_type = 2;
-% results_and_spiketimes = x.integrate;
-% a = PD_criteria(x);
-
+% 2) Do search
 p = xfind;
 p.x = x;
 
