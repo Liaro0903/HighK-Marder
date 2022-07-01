@@ -4,11 +4,13 @@ function qualifies = ABcPD_criteria(x)
   end
   % pause(1);
   [AB_isWave, PD_isTonic, AB_V, PD_V] = meta_criteria(x, "bursting", "tonic");
-  disp([num2str(AB_isWave), ' | ', num2str(PD_isTonic)]);
+  metrics_AB = xtools.V2metrics(AB_V(50001:100000), 'spike_threshold', -40, 'sampling_rate', 1);
+  metrics_PD = xtools.V2metrics(PD_V(50001:100000), 'sampling_rate', 1);
+  % disp([num2str(AB_isWave), ' | ', num2str(PD_isTonic) ' | ', num2str(metrics_AB.firing_rate), ' | ', num2str(metrics_PD.firing_rate)]);
   % all_ABPD_V = zeros(x.t_end * 10, 2);
   % all_ABPD_V(1:50000, 1) = AB_V(1:50000);
   % all_ABPD_V(1:50000, 2) = PD_V(1:50000);
-  if (AB_isWave && PD_isTonic)
+  if (AB_isWave && PD_isTonic && 0.5 < metrics_AB.firing_rate && metrics_AB.firing_rate < 1.5 && 3 < metrics_PD.firing_rate && metrics_PD.firing_rate < 10)
     x1 = copy(x);
     synapse_type = 'Electrical';
     base = 110;

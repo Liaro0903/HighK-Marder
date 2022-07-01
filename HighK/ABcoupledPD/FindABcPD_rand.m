@@ -54,7 +54,7 @@ p.SampleFcn = @p.uniformRandom;
 
 % p.SimFcn = @AB_criteria;
 % p.SimFcn = @PD_criteria;
-p.SimFcn = @ABcoupledPD_criteria;
+p.SimFcn = @ABcPD_criteria;
 
 p.DiscardFcn = @(data) data == 0.0;
 
