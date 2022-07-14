@@ -1,4 +1,4 @@
-function x = PD(x, name, model_or_custom_gbars, sim_t, area)
+function x = PD(x, name, cond_author, model_or_custom_gbars, sim_t, area)
   % Adding compartment
   x.add('compartment', name, 'A', area);
 
@@ -12,9 +12,13 @@ function x = PD(x, name, model_or_custom_gbars, sim_t, area)
   gbars_raw = readmatrix('gbars_sorted.csv');
   gbars = gbars_raw(1:5, :);
 
+  if ~exist ('cond_author', 'var')
+    cond_author = 'prinz';
+  end
+
   for i = 1:length(conds) 
     if (conds{i} ~= "Leak")
-      x.(name).add(['prinz' filesep conds{i}])
+      x.(name).add([cond_author filesep conds{i}])
     end
   end
   x.(name).add('Leak');

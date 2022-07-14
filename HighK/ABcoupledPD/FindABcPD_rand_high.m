@@ -20,6 +20,7 @@ p.x = x;
 
 p.ParameterNames = p.x.find('*gbar');
 p.Upper = [20000 2400 2000 4 4000 50000 4 20000 2400 2000 4 4000 50000 4 160000];
+p.Upper = [2e3 240 200 0.2 400 5000 0.2 2e3 240 200 0.2 400 5000 0.2 16e3];
 p.Lower = zeros(15, 1);
 
 p.SampleFcn = @p.uniformRandom;
