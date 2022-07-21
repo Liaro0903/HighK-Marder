@@ -3,10 +3,14 @@ close all;
 
 % 1) Initial setup
 x = xolotl;
-x = PD(x, 'PD', 'ian', 1, 10000, 0.12);
-x = PD(x, 'AB', 'ian', 1, 10000, 0.628);
+x = PD(x, 'PD', 'prinz-ac', 1, 10000, 0.12);
+x = PD(x, 'AB', 'prinz-ac', 1, 10000, 0.628);
 x.AB.NaV.destroy();
-x = setPotential(x, -80, 24, ["AB" "PD"]);
+x = setPotential(x, -56, 24, ["AB" "PD"]);
+synapse_type = 'Electrical';
+base = 110;
+x.connect('AB','PD', synapse_type, 'gmax', base * 4);
+x.connect('PD','AB', synapse_type, 'gmax', base);
 
 % 2) Do search
 p = xfind;
