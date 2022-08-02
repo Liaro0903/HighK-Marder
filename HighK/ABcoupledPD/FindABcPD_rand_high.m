@@ -1,3 +1,4 @@
+% ARCHIVED, moved to FindABcPD_rand.m
 % This is for the high K simulation
 
 clear;
@@ -5,8 +6,8 @@ close all;
 
 % 1) Initial Setup
 x = xolotl;
-x = PD(x, 'PD', 1, 10000, 0.12);
-x = PD(x, 'AB', 1, 10000, 0.0628);
+x = PD(x, 'PD', 'prinz', 1, 10000, 0.12);
+x = PD(x, 'AB', 'prinz', 1, 10000, 0.0628);
 x.AB.NaV.destroy();
 x = setPotential(x, -56, 24, ["AB" "PD"]);
 synapse_type = 'Electrical';
@@ -19,7 +20,7 @@ p = xfind;
 p.x = x;
 
 p.ParameterNames = p.x.find('*gbar');
-p.Upper = [20000 2400 2000 4 4000 50000 4 20000 2400 2000 4 4000 50000 4 160000];
+% p.Upper = [20000 2400 2000 4 4000 50000 4 20000 2400 2000 4 4000 50000 4 160000];
 p.Upper = [2e3 240 200 0.2 400 5000 0.2 2e3 240 200 0.2 400 5000 0.2 16e3];
 p.Lower = zeros(15, 1);
 

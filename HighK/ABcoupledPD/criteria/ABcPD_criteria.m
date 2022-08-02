@@ -1,8 +1,12 @@
+% ARCHIVED, everything moved to FindABcPD_rand class
+
 function qualifies = ABcPD_criteria(x)
   arguments
     x (1,1) xolotl
   end
   % pause(1);
+  x.set('AB.ElectricalPD.gmax', 0);
+  x.set('PD.ElectricalAB.gmax', 0);
   [AB_isWave, PD_isTonic, AB_V, PD_V] = meta_criteria(x, "bursting", "tonic");
   metrics_AB = xtools.V2metrics(AB_V(50001:100000), 'spike_threshold', -40, 'sampling_rate', 1);
   metrics_PD = xtools.V2metrics(PD_V(50001:100000), 'sampling_rate', 1);
@@ -19,12 +23,9 @@ function qualifies = ABcPD_criteria(x)
     3 < metrics_PD.firing_rate && metrics_PD.firing_rate < 20 && ...
     metrics_PD.n_spikes_per_burst_mean <= 1.1 && metrics_PD.isi_std < 200 ...
   ) % restrict isi_std so isi are consistent not having 2 spikes that are close (which is more like a bursts than tonic)
-    x1 = copy(x);
-    synapse_type = 'Electrical';
-    base = 110;
-    x1.connect('AB','PD', synapse_type, 'gmax', base * 4);
-    x1.connect('PD','AB', synapse_type, 'gmax', base);
-    [AB_isWave, PD_isBursting, AB_V, PD_V] = meta_criteria(x1, "bursting", "bursting");
+    x.set('AB.ElectricalPD.gmax', 110);
+    x.set('PD.ElectricalAB.gmax', 440);
+    [AB_isWave, PD_isBursting, AB_V, PD_V] = meta_criteria(x, "bursting", "bursting");
     if (AB_isWave && PD_isBursting)
       % all_ABPD_V(50001:100000, 1) = AB_V(1:50000);
       % all_ABPD_V(50001:100000, 2) = PD_V(1:50000);
@@ -36,4 +37,5 @@ function qualifies = ABcPD_criteria(x)
   else
     qualifies = 0.0;
   end
+  x.reset('initial');
 end
