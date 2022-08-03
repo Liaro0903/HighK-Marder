@@ -19,6 +19,25 @@ classdef my_plots
       title(['PD, ', PD_title]);
     end
 
+    function my_plot_4(V_AB, V_PD, ha, AB_title, PD_title)
+      tvec = 0.00001:0.1/1000:length(V_AB)/10000;
+      tvec = tvec.';
+      axes(ha(1));
+      plot(tvec, V_AB, 'Color', 'k', 'LineWidth', 1.5);
+      ylim([-80 55]);
+      box off;
+      set(gca, 'XTick', []);
+      ylabel('Voltage (mV)');
+      title(['AB, ', AB_title]);
+      axes(ha(2));
+      plot(tvec, V_PD, 'Color', 'k', 'LineWidth', 1.5);
+      ylim([-80 55]);
+      box off;
+      xlabel('Time (s)');
+      ylabel('Voltage (mV)');
+      title(['PD, ', PD_title]);
+    end
+
     %% Under construction, may or may not need this
     function my_histogram_plots(params, subplot_titles, xlabel_title, legend_titles, group_title)
       figure('outerposition', [0 0 1800 900]);
