@@ -18,7 +18,7 @@ classdef FindABcPD_rand
   end
   methods(Static)
     function setup_3(x, p)
-      FindABcPD_rand.setup4(x, p);
+      FindABcPD_rand.setup_4(x, p);
       x.AB.NaV.destroy();
       x.snapshot('initial');
       p.ParameterNames = p.x.find('*gbar');
