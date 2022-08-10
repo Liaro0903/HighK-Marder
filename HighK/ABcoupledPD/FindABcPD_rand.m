@@ -20,7 +20,6 @@ classdef FindABcPD_rand
     function setup_3(x, p)
       FindABcPD_rand.setup_4(x, p);
       x.AB.NaV.destroy();
-      x.snapshot('initial');
       p.ParameterNames = p.x.find('*gbar');
       p.Upper = [2e3 240 200 0.2 400 5000 0.2 2e3 240 200 0.2 400 5000 0.2 16e3];
       p.Lower = zeros(15, 1);
@@ -119,7 +118,6 @@ classdef FindABcPD_rand
       else
         qualifies = 0.0;
       end
-      x.reset('initial');
     end
 
     function qualifies = criteria_high7(x)
