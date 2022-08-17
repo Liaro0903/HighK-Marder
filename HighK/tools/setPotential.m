@@ -6,9 +6,15 @@ function x = setPotential(x, pot, pot_dV, compartments)
   leak_E = leak_E0 + leak_dV * steps;
 
   for i = 1:length(compartments)
-    x.(compartments(i)).Kd.E = pot;
-    x.(compartments(i)).ACurrent.E = pot;
-    x.(compartments(i)).KCa.E = pot;
+    if isprop(x.(compartments(i)), 'Kd')
+      x.(compartments(i)).Kd.E = pot;
+    end
+    if isprop(x.(compartments(i)), 'ACurrent')
+      x.(compartments(i)).ACurrent.E = pot;
+    end
+    if isprop(x.(compartments(i)), 'KCa')
+      x.(compartments(i)).KCa.E = pot;
+    end
     x.(compartments(i)).Leak.E = leak_E;
   end
 end
