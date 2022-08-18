@@ -9,7 +9,7 @@ function x = PD(x, name, cond_author, model_or_custom_gbars, sim_t, area)
     'Leak', 'NaV'
   };
 
-  gbars_raw = readmatrix('gbars_sorted.csv');
+  gbars_raw = readmatrix('gbars.csv');
   gbars = gbars_raw(1:5, :);
 
   if ~exist ('cond_author', 'var')

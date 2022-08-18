@@ -2,7 +2,7 @@ clear;
 close all;
 
 x = xolotl;
-x = PD(x, 'PD', 2, 10000, 0.12);
+x = PD(x, 'PD', 'prinz', 2, 10000, 0.12);
 
 custom_gbars = [
   461.4818186
@@ -15,5 +15,5 @@ custom_gbars = [
   0
 ];
 
-x = PD(x, 'AB', custom_gbars, 10000, 0.0628);
+x = PD(x, 'AB', 'prinz', custom_gbars, 10000, 0.0628);
 x.plot();

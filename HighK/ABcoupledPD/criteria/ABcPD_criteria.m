@@ -37,5 +37,4 @@ function qualifies = ABcPD_criteria(x)
   else
     qualifies = 0.0;
   end
-  x.reset('initial');
 end

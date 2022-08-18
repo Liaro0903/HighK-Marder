@@ -30,7 +30,7 @@ methods
       plot_length = plot_config(length(plot_numbers), 2);
       ha = tight_subplot(plot_width, plot_length, [.1 .04], [.07 .05], [.05 .01]);
 
-      switch plot_length      
+      switch plot_length
         case 1
           x1.t_end = 10000;
         case 2
@@ -46,7 +46,7 @@ methods
       end
       sgtitle(f, ['Model ' num2str(model)], 'FontSize', 16);
       figlib.pretty('PlotLineWidth',1,'LineWidth',1);
-      % saveas(f, ['./', num2str(model), '.png']);
+      % saveas(f, ['./', num2str(model), '.png']); uncomment to save figures as png
       % close;
     end
   end

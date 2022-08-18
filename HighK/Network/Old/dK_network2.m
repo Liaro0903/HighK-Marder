@@ -42,9 +42,9 @@ x0.t_end = 10000;
 % Disable show calcium
 x0.pref.show_Ca = 0;
 
-for AB = 1:1
-for LP = 5:5
-for PY = 2:2
+for AB = 3:3
+for LP = 2:2
+for PY = 1:1
 
 % Set model array and directory name
 select_model = [AB, LP, PY];
@@ -74,7 +74,7 @@ leak_E0 = -50; leak_dV = 5;
 glut_E0 = -70; glut_dV = 7.5;
 
 % Looping through potentials
-for pot = -100:pot_dV:-40
+for pot = -80:pot_dV:-60
   % Copy to a new model
   x2 = copy(x1);
 
@@ -91,6 +91,8 @@ for pot = -100:pot_dV:-40
     x2.(comps{i}).Leak.E = leak_E;
   end
 
+  % x2.PY.KCa.gbar = 32;
+
   % Adding Synapses
   x2.connect('AB','PY','prinz/Chol','gmax', 3, 'E', pot);
   x2.connect('AB','LP','prinz/Glut','gmax',30, 'E', glut_E);
@@ -105,34 +107,36 @@ for pot = -100:pot_dV:-40
   % Integrate, plot network, and save figure
   x2_title = [dir_title, '- E_K: ', int2str(pot), '; E_L: ', int2str(leak_E), '; E_{glut}: ', num2str(glut_E), '; E_{chol}: ', int2str(pot)];
   x2.myplot(x2_title);
-  x2_filename = ['./', dir_title, '/', dir_title, int2str(pot), int2str(leak_E*-1), num2str(glut_E*-1), '.png'];
+  % x2.plot();
+  % x2.manipulate('*gbar');
+  % x2_filename = ['./', dir_title, '/', dir_title, int2str(pot), int2str(leak_E*-1), num2str(glut_E*-1), '.png'];
   % saveas(x2.handles.fig, x2_filename, 'png');
 
   % Reset to x2
-  x2.reset('x2');
+  % x2.reset('x2');
 
   % Integrating, plot currents, and save figure
-  x2.output_type = 1;
-  x2_results = x2.integrate;
-  V_AB = x2_results.AB.V;
+  % x2.output_type = 1;
+  % x2_results = x2.integrate;
+  % V_AB = x2_results.AB.V;
    
-  tvec = 0.1:x0.sim_dt:x0.t_end;
-  tvec = tvec.';
+  % tvec = 0.1:x0.sim_dt:x0.t_end;
+  % tvec = tvec.';
 
-  figure('outerposition', [0 0 1200 1200]); 
-  x2_currents_fig = subplot(length(conds_name)+1, 1, 1);
-  plot(tvec, V_AB, 'LineWidth', 1.5);
-  box off;
-  title('V_{AB}');
-  %% 2/22/2022, there might be an error here that I didn't see.
-  for i = 1:length(conds_name)
-    subplot(length(conds_name)+1, 1, i+1);
-    plot(tvec, x2_results.AB.(conds_name{i}).I, 'Color', 'k', 'LineWidth', 1.5);
-    box off;
-    title(conds_name{i});
-  end
-  sgtitle(x2_title);
-  x2_filename = ['./', dir_title, '/', dir_title, int2str(pot), int2str(leak_E*-1), num2str(glut_E*-1), '_I.png'];
+  % figure('outerposition', [0 0 1200 1200]); 
+  % x2_currents_fig = subplot(length(conds_name)+1, 1, 1);
+  % plot(tvec, V_AB, 'LineWidth', 1.5);
+  % box off;
+  % title('V_{AB}');
+  % %% 2/22/2022, there might be an error here that I didn't see.
+  % for i = 1:length(conds_name)
+  %   subplot(length(conds_name)+1, 1, i+1);
+  %   plot(tvec, x2_results.AB.(conds_name{i}).I, 'Color', 'k', 'LineWidth', 1.5);
+  %   box off;
+  %   title(conds_name{i});
+  % end
+  % sgtitle(x2_title);
+  % x2_filename = ['./', dir_title, '/', dir_title, int2str(pot), int2str(leak_E*-1), num2str(glut_E*-1), '_I.png'];
   % saveas(x2_currents_fig, x2_filename);
     
   % close all;

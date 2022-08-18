@@ -11,10 +11,16 @@ x0.add('compartment', 'PY');
 comps = x0.find('compartment');
 
 % Read conductances
+% conds = {
+%   'prinz/NaV', 'prinz/CaT', 'prinz/CaS', ...
+%   'prinz/ACurrent', 'prinz/KCa', 'prinz/Kd', ...
+%   'prinz/HCurrent', 'Leak'
+% };
+
 conds = {
-  'prinz/NaV', 'prinz/CaT', 'prinz/CaS', ...
-  'prinz/ACurrent', 'prinz/KCa', 'prinz/Kd', ...
-  'prinz/HCurrent', 'Leak'
+  'prinz/ACurrent', 'prinz/CaS', 'prinz/CaT', ...
+  'prinz/HCurrent', 'prinz/KCa', 'prinz/Kd', ...
+  'Leak', 'prinz/NaV'
 };
 
 gbars_raw = readmatrix('gbars.csv');
@@ -59,8 +65,8 @@ for i = 1:length(comps)
 end
 
 % Change to K Potential and Leak
-% x1_leak_E = -60; % mV
-x1_leak_E = -50; % mV
+x1_leak_E = -60; % mV
+% x1_leak_E = -50; % mV
 for pot = -100:10:-40
     x2 = copy(x1);
     % Update pot

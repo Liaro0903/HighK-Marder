@@ -6,14 +6,22 @@ classdef FindABcPD_rand
     p (1, 1) xfind
   end
   methods
-    function a = FindABcPD_rand(exp_category, exp_num)
+    function a = FindABcPD_rand(exp_category, exp_num, par_or_sim)
       a.x = xolotl;
       a.p = xfind;
       a.p.x = a.x;
       setup_name = ['setup_', exp_category, num2str(exp_num)];
       FindABcPD_rand.(setup_name)(a.x, a.p);
-      % a.p.parallelSearch;
-      a.p.simulate;
+      if par_or_sim == "par"
+        a.p.parallelSearch;
+      else
+        a.p.simulate;
+      end
+    end
+    % A function to stop the parallel search, this function makes your life easier: instead of typing 2 lines you only need to type 1
+    function [params, data] = stop_parallel_search(a)
+      cancel(a.p.workers);
+      [params, data] = a.p.gather;
     end
   end
   methods(Static)
