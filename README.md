@@ -2,7 +2,7 @@
 
 This repository holds the code for the project *modeling the recovery of bursting of the crab pyloric neurons in [K+] saline*. In short, this is called the HighK project. The initial findings and basic background of this project is written in the Abstract section. 
 
-This project is currenlty divided into 4 parts (and hence 4 folders inside HighK): Network, ABPD, ABcoupledPD, and AB_multi_compartment. The Abstract is currently about ABcoupledPD. Each part has their own experiments, which are outlined in the Experiments section. Each file also explains the purpose of each file and how to run them.
+This project is currently divided into 4 parts (and hence 4 folders inside HighK): Network, ABPD, ABcoupledPD, and AB_multi_compartment. The Abstract is currently about ABcoupledPD. Each part has their own experiments, which are outlined in the Experiments section. Each file also explains the purpose of each file and how to run them.
 
 "Test files" are not actually test files, but they act more like a demo on how to run the code. They also serve as making sure the actual code runs as it was intended to.
 
