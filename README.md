@@ -1,6 +1,6 @@
 # Modeling the recovery of bursting of the crab pyloric neurons in 2.5x [K+] saline
 
-This repository holds the code for the project *modeling the recovery of bursting of the crab pyloric neurons in [K+] saline*. In short, this is called the HighK project. The initial findings and basic background of this project is written in the Abstract section. 
+This repository holds the code for the project *modeling the recovery of bursting of the crab pyloric neurons in 2.5x[K+] saline*. In short, this is called the HighK project. The initial findings and basic background of this project is written in the Abstract section. 
 
 This project is currently divided into 4 parts (and hence 4 folders inside HighK): Network, ABPD, ABcoupledPD, and AB_multi_compartment. The Abstract is currently about ABcoupledPD. Each part has their own experiments, which are outlined in the Experiments section. Each file also explains the purpose of each file and how to run them.
 
@@ -15,11 +15,11 @@ He, L.S., Rue, M.C.P., Morozova, E.O., Powell, D.J., James, E.J., Kar, M., Marde
 
 
 # Installation
-Make sure to have the following toolboxex installed in your MATLAB
+Make sure to have the following toolboxes installed in your MATLAB
 1. Xolotl
 2. tight_subplot
 
-The `MyXolotl` folder holds custom files that need to be copied to the Xolotl toolbox for the code to work. Run `initialize.sh` in the `MyXolotl` folder.
+The `MyXolotl` folder holds custom files that need to be copied to the Xolotl toolbox for the code to work. Run `initialize.sh` in the `MyXolotl` folder and it will add the custom files to their location in Xolotl toolbox.
 
 # The core of how this project is structured
 The main class is called the HKX, which is a xolotl wrapper (more info in the file). Inside contains methods that are used repeately to setup the neurons, so it will simplify the setup process.
@@ -34,7 +34,7 @@ The generated data for these experiments are stored in this [google drive folder
 | 1   | Simulate the prinz network while changing Ek for A, KCa, and Kd from -100mV to -40mV, but this is wrong because synaptic currents also depend on K. | 150 |
 | 2   | Same thing as in exp1 but now also changing Echol and Eglut | 150 |
 | 3.1 | Increasing all gbar from x2 to x8 on ABPD that switch to silent at -70mV |  |
-| 3.2 | Using Model 221, did a grid search on the different gbar steps on ABPD ranging from x1 to x3. | 6561 |
+| 3.2 | Using Model 221, did a grid search on gbar on ABPD ranging from x1 to x3. | 6561 |
 | 3.3 | Same as 3.2 except simulate 10 seconds and only grab the last 5 seconds to avoid initial effect. | 6561 |
 | 3.4 | Increase KCa on all neurons, and they become triphasic. Just to demonstrate KCa on networks. | 1 |
 | 4   | Attach ABcPD models to the network and see what changes |  |
