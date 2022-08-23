@@ -17,11 +17,19 @@ end
   
 methods
   % Constructor
-  % sim_t: the simulation time
+  % sim_t_or_x: the simulation time (in 0.1 ms) or supply an existing xolotl object
   % base_EL: specify the base equilibrium potential for leak
   % pot_dV: specify the steps difference of high K
-  function hx = HKX(sim_t, base_EL, pot_dV)
-    hx.x = xolotl;
+  function hx = HKX(sim_t_or_x, base_EL, pot_dV)
+    if isobject(sim_t_or_x) % if they supply an external xolotl object instead of a number
+      hx.x = sim_t_or_x;
+    else
+      hx.x = xolotl;
+      % Set up simulation time, turn off show Ca, and set output type to 2
+      hx.x.t_end = sim_t_or_x;
+      hx.x.pref.show_Ca = 0;
+      hx.x.output_type = 2;
+    end
     
     % Read and initialize prinz gbars
     gbars_raw = readmatrix('gbars.csv');
@@ -33,12 +41,7 @@ methods
     hx.leak_E0 = base_EL;
 
     % Potential difference of each step
-    hx.pot_dV = pot_dV; 
-
-    % Set up simulation time, turn off show Ca, and set output type to 2
-    hx.x.t_end = sim_t;
-    hx.x.pref.show_Ca = 0;
-    hx.x.output_type = 2;
+    hx.pot_dV = pot_dV;
   end
 
   function add_pyloric_neuron(self, type, name, cond_author, model_or_custom_gbars, area)
@@ -78,10 +81,11 @@ methods
     % Adding calcium dynamics
     self.x.(name).add('prinz/CalciumMech');    
   end
-  
+
+  % A function that updates the potassium equilibrium potential. 
   % pot: your desire K potential. Channels that somewhat depends on K will be updated through the pot_dV specified
   function [leak_E, glut_E] = setKPot(self, pot, compartments)
-    if ~exist('compartments', 'var') % if no specified 
+    if ~exist('compartments', 'var') % if compartments are not supplied
       compartments = self.x.find('compartment');
     end
     pot0 = -80; glut_E0 = -70;
@@ -129,10 +133,10 @@ methods
   end
 
   % Connects AB and PD electrically
-  function connect_ABPD(self, ABtoPD, PDtoAB)
+  function connect_ABPD(self, ABname, PDname, ABtoPD, PDtoAB)
     synapse_type = 'Electrical';
-    self.x.connect('AB', 'PD', synapse_type, 'gmax', ABtoPD);
-    self.x.connect('PD', 'AB', synapse_type, 'gmax', PDtoAB);
+    self.x.connect(ABname, PDname, synapse_type, 'gmax', ABtoPD);
+    self.x.connect(PDname, ABname, synapse_type, 'gmax', PDtoAB);
   end
 
   function hx = copyHKX(self)
