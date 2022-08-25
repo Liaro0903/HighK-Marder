@@ -22,7 +22,7 @@ methods
     % parfor model = model_num
       hx1 = hx.copyHKX();
       hx1.x.set(hx1.x.find('*gbar'), params(:, model));
-      hx1.connect_ABPD(0, 0);
+      hx1.connect_ABPD('AB', 'PD', 0, 0);
       f = figure('outerposition',[0 0 1800 1200],'PaperUnits','points','PaperSize',[1200 1200]);
       plot_length = plot_config(length(plot_numbers), 2);
       
@@ -43,6 +43,8 @@ methods
       end
       sgtitle(f, ['Model ' num2str(model)], 'FontSize', 16);
       figlib.pretty('PlotLineWidth', 1, 'LineWidth', 1);
+      % saveas(f, ['./', num2str(model), '.png']); uncomment to save figures as png
+      % close;
     end
   end
 end
@@ -70,7 +72,7 @@ methods(Static)
     hx.setKPot(-80);
 
     results_and_spiketimes = hx.x.integrate;
-    my_plots.my_plot_3_2(results_and_spiketimes.AB.V, results_and_spiketimes.PD.V, size, plot_index, '-80mV, uncoupled', '-80mV, uncoupled');
+    my_plots.my_plot_3(results_and_spiketimes.AB.V, results_and_spiketimes.PD.V, size, plot_index, 'AB, -80mV, uncoupled', 'PD, -80mV, uncoupled');
   end
   function f2(hx, size, plot_index)
     base = 110;
@@ -79,7 +81,7 @@ methods(Static)
     hx.setKPot(-80);
 
     results_and_spiketimes = hx.x.integrate;
-    my_plots.my_plot_3_2(results_and_spiketimes.AB.V, results_and_spiketimes.PD.V, size, plot_index, '-80mV, coupled', '-80mV, coupled');
+    my_plots.my_plot_3(results_and_spiketimes.AB.V, results_and_spiketimes.PD.V, size, plot_index, 'AB, -80mV, coupled', 'PD, -80mV, coupled');
   end
   function f3(hx, size, plot_index)
     base = 110;
@@ -88,7 +90,7 @@ methods(Static)
     hx.setKPot(-56);
 
     results_and_spiketimes = hx.x.integrate;
-    my_plots.my_plot_3_2(results_and_spiketimes.AB.V, results_and_spiketimes.PD.V, size, plot_index, '-56mV, coupled', '-56mV, coupled');
+    my_plots.my_plot_3(results_and_spiketimes.AB.V, results_and_spiketimes.PD.V, size, plot_index, 'AB, -56mV, coupled', 'PD, -56mV, coupled');
   end
   function f4(hx, size, plot_index)
     base = 110;
@@ -114,7 +116,7 @@ methods(Static)
     % x1.PD.NaV.gbar      =;
 
     results_and_spiketimes = hx.x.integrate;
-    my_plots.my_plot_3_2(results_and_spiketimes.AB.V, results_and_spiketimes.PD.V, size, plot_index, 'CaT: 87.45→30', 'KCa: 68.54→400, Kd: 2146');
+    my_plots.my_plot_3(results_and_spiketimes.AB.V, results_and_spiketimes.PD.V, size, plot_index, 'AB, CaT: 87.45→30', 'PD, KCa: 68.54→400, Kd: 2146');
   end
 end
 

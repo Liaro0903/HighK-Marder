@@ -1,201 +1,109 @@
 % This plots the distributions for each channel for each neuron for distribution comparison
 
-clear;
-close all;
+% Warning: there is still a lot of bugs needed to be fixed, but this is at least workable for some distributions
 
-load('FindABcPD_rand_3.mat');
+classdef ABcPD_analysis
 
-distribution_1_params = params;
-% params_to_be_graphed = params_filtered; %% if there's params_filtered
-
-load('FindABcPD_rand_high_7.mat');
-distribution_2_params = params;
-
-load('FindABcPD_rand_ac_1.mat');
-distribution_3_params = params;
-
-load('params_to_vary.mat');
-
-conds = {'ACurrent', 'CaS', 'CaT', 'HCurrent', 'KCa', 'Kd', 'Leak', 'NaV'};
-
-%% Part 1: Scatter Plot
-% num_models = length(params_to_be_graphed);
-% AB_X = repmat((1:7), 1, num_models) + 0.8 * rand(1, 7 * num_models) - 0.4;
-% AB_Y = reshape(params_to_be_graphed(1:7, :), 1, 7 * num_models);
-% scatter(AB_X, AB_Y);
-
-% PY_X = repmat((1:8), 1, num_models) + 0.8 * rand(1, 8 * num_models) - 0.4;
-% PY_Y = reshape(params_to_be_graphed(8:15, :), 1, 8 * num_models);
-% figure;
-% scatter(PY_X, PY_Y);
-
-%% Part 2: Histograms
-% Graph AB histograms
-figure('outerposition', [0 0 1800 900]);
-hold on;
-for i = 1:7 
-  subplot(2, 4, i);
-  % histogram(distribution_1_params(i,:), 30, 'facecolor', 'red', 'facealpha', 0.3, 'edgecolor', 'none', 'linewidth', 1, 'normalization', 'probability');
-  histogram(distribution_1_params(i,:), 30, 'facecolor', '#60BAFF', 'facealpha', 0.7, 'edgecolor', 'none', 'linewidth', 1, 'normalization', 'probability');
-  % histogram(distribution_1_params(i,:), 30, 'facecolor', '#84ACB6', 'facealpha', 0.9, 'edgecolor', 'none', 'linewidth', 1, 'normalization', 'probability');
-  hold on;
-  % histogram(distribution_2_params(i,:), 30, 'facecolor', 'blue', 'FaceAlpha', 0.3, 'edgecolor', 'none', 'linewidth', 1, 'normalization', 'probability');
-  histogram(distribution_2_params(i,:), 30, 'facecolor', '#9860FF', 'FaceAlpha', 0.5, 'edgecolor', 'none', 'linewidth', 1, 'normalization', 'probability');
-  % histogram(distribution_2_params(i,:), 30, 'facecolor', '#DECEE8', 'FaceAlpha', 0.9, 'edgecolor', 'none', 'linewidth', 1, 'normalization', 'probability');
-  hold on;
-  % histogram(distribution_3_params(i,:), 30, 'facecolor', 'green', 'FaceAlpha', 0.3, 'edgecolor', 'none', 'linewidth', 1, 'normalization', 'probability');
-  % histogram(distribution_3_params(i,:), 30, 'displaystyle', 'stairs', 'FaceAlpha', 0.1, 'edgecolor', 'c', 'linewidth', 1, 'normalization', 'probability');
-  % title(params_to_vary{i});
-  title(conds{i});
-  xlabel('max conductances (μS)');
-  ylabel('probability of occurence');
-  box off;
-  axis tight;
-  set(gca, 'YTick', []);
-  % if i == 1
-  %   legend('Distribution 1', 'Distribution 2', 'Distribution 3', 'location', 'southeast');
-  % end
+properties
+  conds_AB = {'ACurrent', 'CaS', 'CaT', 'HCurrent', 'KCa', 'Kd', 'Leak'};
+  conds_PD = {'ACurrent', 'CaS', 'CaT', 'HCurrent', 'KCa', 'Kd', 'Leak', 'NaV'};
+  params_AB = cell(1, 1);
+  params_PD = cell(1, 1);
 end
-sgtitle('Histogram of Max gbar AB Distribution 1 vs Distribution 2');
 
-figlib.pretty('PlotLineWidth', 0.5,'LineWidth', 0.5);
-
-% Graph PD histograms
-figure('outerposition', [0 0 1800 900]);
-hold on;
-for i = 1:8
-  subplot(2, 4, i);
-  % histogram(distribution_1_params(i+7,:), 30, 'facecolor', 'red', 'facealpha', 0.3, 'edgecolor', 'none', 'linewidth', 1, 'normalization', 'probability')
-  histogram(distribution_1_params(i+7,:), 30, 'facecolor', '#60BAFF', 'facealpha', 0.7, 'edgecolor', 'none', 'linewidth', 1, 'normalization', 'probability')
-  hold on;
-  % histogram(distribution_2_params(i+7,:), 30, 'facecolor', 'blue', 'FaceAlpha', 0.3, 'edgecolor', 'none', 'linewidth', 1, 'normalization', 'probability');
-  histogram(distribution_2_params(i+7,:), 30, 'facecolor', '#9860FF', 'FaceAlpha', 0.5, 'edgecolor', 'none', 'linewidth', 1, 'normalization', 'probability');
-  hold on;
-  % histogram(distribution_3_params(i+7,:), 30, 'facecolor', 'green', 'FaceAlpha', 0.3, 'edgecolor', 'none', 'linewidth', 1, 'normalization', 'probability');
-  % title(params_to_vary{i+7});
-  title(conds{i});
-  xlabel('max conductances (μS)');
-  ylabel('probability of occurence');
-  box off;
-  axis tight;
-  set(gca, 'YTick', []);
-  % if i == 1
-  %   legend('Distribution 1', 'Distribution 2', 'Distribution 3', 'location', 'southeast');
-  % end
+methods
+  % exps: Enter an array of experiments that want to be plotted on top of each other
+  % example use: a = ABcPD_analysis(["rand_3", "rand_high_7"]);
+  function a = ABcPD_analysis(exps)
+    % close all;
+    a.params_AB = cell(length(exps), 1);
+    a.params_PD = cell(length(exps), 1);
+    for i = 1:length(exps)
+      filename = strcat('FindABcPD_', exps(i), '.mat');
+      load(filename);
+      setup_name = strcat('setup_', erase(exps(i), 'rand_'));
+      [a.params_AB{i}, a.params_PD{i}] = ABcPD_analysis.(setup_name)(params);
+    end
+    my_plots.my_histogram_plots(a.params_AB, a.conds_AB, 'max conductances (μS)', {'Distribution 1', 'Distribution 2'}, 'Histogram of gbar AB Distribution 1 vs Distribution 2');
+    my_plots.my_histogram_plots(a.params_PD, a.conds_PD, 'max conductances (μS)', {'Distribution 1', 'Distribution 2'}, 'Histogram of gbar PD Distribution 1 vs Distribution 2');
+    if (sum(exps.contains('ac')) > 0) % if one of them is plotting ac
+      ABcPD_analysis.plot_ac_1();
+    end
+  end
 end
-sgtitle('Histogram of Max gbar PD Distribution 1 vs Distribution 2');
 
-figlib.pretty('PlotLineWidth', 0.5,'LineWidth', 0.5);
+methods(Static)
+  function [params_AB, params_PD] = setup_3(params)
+    params_AB = params(1:7, :);
+    params_PD = params(8:15, :);
+  end
+  function [params_AB, params_PD] = setup_4(params)
+    params_AB = params(1:8, :);
+    params_PD = params(9:16, :);
+  end
+  function [params_AB, params_PD] = setup_high_7(params)
+    params_AB = params(1:7, :);
+    params_PD = params(8:15, :);
+  end
+  function [params_AB, params_PD] = setup_ac_1(params)
+    params_AB = params(1:7, :);
+    params_PD = params(8:15, :);
+  end
+  % Because ac also have shifting half-potentials as well, so this function helps plot those shifts. Also it is not optimized yet, because I need to rewrite some of the my_histogram_plots code but I didn't have time to :( 
+  function plot_ac_1()
+    load('FindABcPD_rand_ac_1.mat');
+    conds = {'ACurrent', 'CaS', 'CaT', 'HCurrent', 'KCa', 'Kd', 'Leak', 'NaV'};
+    % Graph AB shifting half potential
+    figure('outerposition', [0 0 1800 900]);
+    hold on;
+    for i = 1:6
+      subplot(2, 4, i);
+      histogram(params(i+15,:), 30, 'facecolor', 'red', 'facealpha', 0.3, 'edgecolor', 'none', 'linewidth', 1, 'normalization', 'probability'); % plot the m
+      hold on;
+      if (i <= 3)
+        histogram(params(i+28,:), 30, 'facecolor', 'blue', 'facealpha', 0.3, 'edgecolor', 'none', 'linewidth', 1, 'normalization', 'probability'); % plot the h
+      end
+      title(['AB.', conds{i}]);
+      xlabel('Shifts in half potential');
+      ylabel('probability of occurence');
+      box off;
+      axis tight;
+      set(gca, 'YTick', []);
+      xlim([-4.9 4.9]);
+      if i == 1
+        legend('m', 'h', 'location', 'southeast');
+      end
+    end
+    sgtitle('Histogram of half potential shifts in AB Distribution 3');
+    figlib.pretty('PlotLineWidth', 0.5,'LineWidth', 0.5);
 
-% Graph AB shifting half potential
-% figure('outerposition', [0 0 1800 900]);
-% hold on;
-% for i = 1:6
-%   subplot(2, 4, i);
-%   histogram(distribution_3_params(i+15,:), 30, 'facecolor', 'red', 'facealpha', 0.3, 'edgecolor', 'none', 'linewidth', 1, 'normalization', 'probability'); % plot the m
-%   hold on;
-%   if (i <= 3)
-%     histogram(distribution_3_params(i+28,:), 30, 'facecolor', 'blue', 'facealpha', 0.3, 'edgecolor', 'none', 'linewidth', 1, 'normalization', 'probability'); % plot the h
-%   end
-%   title(['AB.', conds{i}]);
-%   xlabel('Shifts in half potential');
-%   ylabel('probability of occurence');
-%   box off;
-%   axis tight;
-%   set(gca, 'YTick', []);
-%   xlim([-4.9 4.9]);
-%   if i == 1
-%     legend('m', 'h', 'location', 'southeast');
-%   end
-% end
-% sgtitle('Histogram of half potential shifts in AB Distribution 3');
-% figlib.pretty('PlotLineWidth', 0.5,'LineWidth', 0.5);
+    % Graph PD shifting half potential
+    figure('outerposition', [0 0 1800 900]);
+    hold on;
+    for i = 1:7
+      subplot(2, 4, i);
+      histogram(params(i+21,:), 30, 'facecolor', 'r', 'facealpha', 0.3, 'edgecolor', 'none', 'linewidth', 1, 'normalization', 'probability'); % plot the m
+      hold on;
+      if (i <= 3)
+        histogram(params(i+31,:), 30, 'facecolor', 'b', 'facealpha', 0.3, 'edgecolor', 'none', 'linewidth', 1, 'normalization', 'probability'); % plot the h
+      end
+      if (i == 7) % for the last NaV
+        histogram(params(35,:), 30, 'facecolor', 'b', 'facealpha', 0.3, 'edgecolor', 'none', 'linewidth', 1, 'normalization', 'probability'); % plot the h
+      end
+      title(['PD.', conds{i}]);
+      xlabel('Shifts in half potential');
+      ylabel('probability of occurence');
+      box off;
+      axis tight;
+      set(gca, 'YTick', []);
+      xlim([-4.9 4.9]);
+      if i == 1
+        legend('m', 'h', 'location', 'southeast');
+      end
+    end
+    sgtitle('Histogram of half potential shifts in PD Distribution 3');
+    figlib.pretty('PlotLineWidth', 0.5,'LineWidth', 0.5);
+  end
+end
 
-% Graph PD shifting half potential
-% figure('outerposition', [0 0 1800 900]);
-% hold on;
-% for i = 1:7
-%   subplot(2, 4, i);
-%   histogram(distribution_3_params(i+21,:), 30, 'facecolor', 'r', 'facealpha', 0.3, 'edgecolor', 'none', 'linewidth', 1, 'normalization', 'probability'); % plot the m
-%   hold on;
-%   if (i <= 3)
-%     histogram(distribution_3_params(i+31,:), 30, 'facecolor', 'b', 'facealpha', 0.3, 'edgecolor', 'none', 'linewidth', 1, 'normalization', 'probability'); % plot the h
-%   end
-%   if (i == 7) % for the last NaV
-%     histogram(distribution_3_params(35,:), 30, 'facecolor', 'b', 'facealpha', 0.3, 'edgecolor', 'none', 'linewidth', 1, 'normalization', 'probability'); % plot the h
-%   end
-%   title(['PD.', conds{i}]);
-%   xlabel('Shifts in half potential');
-%   ylabel('probability of occurence');
-%   box off;
-%   axis tight;
-%   set(gca, 'YTick', []);
-%   xlim([-4.9 4.9]);
-%   if i == 1
-%     legend('m', 'h', 'location', 'southeast');
-%   end
-% end
-% sgtitle('Histogram of half potential shifts in PD Distribution 3');
-% figlib.pretty('PlotLineWidth', 0.5,'LineWidth', 0.5);
-
-% Ca = 160;
-
-% ac = {
-%   (@(dm) @(V) 1.0./(1.0+exp((V+27.2+dm)./-8.7))), ...
-%   (@(dm) @(V) 1.0./(1.0+exp((V+33.0+dm)./-8.1))), ...
-%   (@(dm) @(V) 1.0./(1.0+exp((V+27.1+dm)./-7.2))), ...
-%   (@(dm) @(V) 1.0./(1.0+exp((V+75.0+dm)./5.5))), ...
-%   (@(dm) @(V) (Ca./(Ca+3.0))./(1.0+exp((V+28.3+dm)./-12.6))), ...
-%   (@(dm) @(V) 1.0./(1.0+exp((V+12.3+dm)./-11.8))), ...
-%   (@(dm) @(V) 1.0./(1.0+exp((V+25.5+dm)./-5.29)))
-% };
-
-% inac = {
-%   (@(dh) @(V) 1.0./(1.0+exp((V+56.9+dh)./4.9))), ...
-%   (@(dh) @(V) 1.0./(1.0+exp((V+60.0+dh)./6.2))), ...
-%   (@(dh) @(V) 1.0./(1.0+exp((V+32.1+dh)./5.5))), ...
-%   (@(dh) @(V) NaN), ...
-%   (@(dh) @(V) NaN), ...
-%   (@(dh) @(V) NaN), ...
-%   (@(dh) @(V) 1.0./(1.0+exp((V+48.9+dh)./5.18))), ...
-% };
-
-% c = @(dm) @(V) (1.0./(1.0+exp((V+27.2+dm)./-8.7)));
-
-% Activation curve shifts of AB (under construction)
-% figure('outerposition', [0 0 1800 900]);
-% hold on;
-% for i = 1:6
-  % subplot(2, 4, i);
-  % fplot(ac{i}(0), [-100 10], 'Color', 'k', 'LineWidth', 1.5);
-  % fplot(@(V) (1.0./(1.0+exp((V+27.2)/-8.7))), [-100 10], 'Color', 'k', 'LineWidth', 1.5);
-  % hold on;
-  % fplot(ac{i}(mean(distribution_3_params(i+15, :))), [-100 10], 'Color', 'r', 'LineWidth', 1.5);
-  % fplot(@(V) (1.0./(1.0+exp((V+27.2+2)/-8.7))), [-100 10], 'Color', 'r', 'LineWidth', 1.5);
-  % if (~isnan((inac{i}(0))(0)))
-    % fplot(inac{i}(0), [-100 10], 'Color', 'b', 'LineWidth', 1.5);
-    % fplot(inac{i}(2), [-100 10], 'Color', 'g', 'LineWidth', 1.5);
-  % end
-%   xlabel('Voltage (mV)');
-%   title(['AB.', conds{i}]);
-% end
-% figlib.pretty('PlotLineWidth', 0.5,'LineWidth', 0.5);
-
-% Activation curve shifts for PD (under construction)
-% figure('outerposition', [0 0 1800 900]);
-% hold on;
-% for i = 1:7
-  % subplot(2, 4, i);
-  % fplot(ac{i}(0), [-100 10], 'Color', 'k', 'LineWidth', 1.5);
-  % fplot(@(V) (1.0./(1.0+exp((V+27.2)/-8.7))), [-100 10], 'Color', 'k', 'LineWidth', 1.5);
-  % hold on;
-  % fplot(ac{i}(mean(distribution_3_params(i+21, :))), [-100 10], 'Color', 'r', 'LineWidth', 1.5);
-  % fplot(@(V) (1.0./(1.0+exp((V+27.2+2)/-8.7))), [-100 10], 'Color', 'r', 'LineWidth', 1.5);
-  % if (~isnan((inac{i}(0))(0)))
-    % fplot(inac{i}(0), [-100 10], 'Color', 'b', 'LineWidth', 1.5);
-    % fplot(inac{i}(2), [-100 10], 'Color', 'g', 'LineWidth', 1.5);
-  % end
-  % xlabel('Voltage (mV)');
-  % title(['PD.', conds{i}]);
-% end
-% figlib.pretty('PlotLineWidth', 0.5,'LineWidth', 0.5);
+end

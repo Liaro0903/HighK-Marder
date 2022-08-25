@@ -1,9 +1,6 @@
 classdef my_plots
   methods(Static)
-    % This is the first modification of 
-    function my_plot_1()
-
-    end
+    % myplot1 and myplot2 are already added to the path of xolotl
     function my_plot_3(V_1, V_2, size, plot_index, C1_title, C2_title)
       tvec = 0.00001:0.1/1000:length(V_1)/10000;
       tvec = tvec.';
@@ -43,13 +40,14 @@ classdef my_plots
     end
 
     % These are used for plotting the distribution overlaps in *analysis.m
+    % So far I set it to plotting of maximum 3 different distributions/overlaps
     function my_histogram_plots(params, subplot_titles, xlabel_title, legend_titles, group_title)
       figure('outerposition',[0 0 1800 900],'PaperUnits','points','PaperSize',[1200 1200]);
       hold on;
       [w, ~] = size(params{1}); % the width is the number of ion channels
       color = {'red', 'blue', 'green'}; % feel free to change the colors here
       % color2 = {'#60BAFF', '#9860FF'} % other colors I used (this one was used on the scifest poster)
-      alpha = [0.6 0.6];
+      alpha = [0.6 0.6 0.6];
       % alpha2 = [0.7 0.5]; % this one was used on the scifest poster
       for i = 1:w  % go through the number of ion channels
         subplot(2, 4, i);

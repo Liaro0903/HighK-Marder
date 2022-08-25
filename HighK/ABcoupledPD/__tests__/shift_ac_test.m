@@ -3,17 +3,17 @@
 clear;
 close all;
 
-x = xolotl;
-x = PD(x, 'PD', 'prinz', 1, 10000, 0.12);
-x.myplot('Original prinz');
+hx = HKX(10000, -50, 24);
+hx.add_pyloric_neuron('ABPD', 'PD', 'prinz', 1, 0.12);
+hx.x.myplot('Original prinz');
 
-x1 = xolotl;
-x1 = PD(x1, 'PD', 'prinz-ac', 1, 10000, 0.12);
-x1.myplot('With prinz-ac, but have not shift curve yet');  % x1 and x should have the same graph
+hx1 = HKX(10000, -50, 24);
+hx1.add_pyloric_neuron('ABPD', 'PD', 'prinz-ac', 1, 0.12);
+hx1.x.myplot('With prinz-ac, but have not shift curve yet'); % hx1 and x should have the same graph
 
-x2 = xolotl;
-x2 = PD(x2, 'PD', 'prinz-ac', 1, 10000, 0.12);
-NaV_gbar = x2.PD.NaV.gbar;
-x2.PD.NaV.destroy();
-x2.PD.add('prinz-ac/NaV', 'gbar', NaV_gbar, 'ac_shift_m', 4, 'ac_shift_h', -4);
-x2.myplot('With prinz-ac, shifts m and h'); 
+hx2 = HKX(10000, -50, 24);
+hx2.add_pyloric_neuron('ABPD', 'PD', 'prinz-ac', 1, 0.12);
+NaV_gbar = hx2.x.PD.NaV.gbar;
+hx2.x.PD.NaV.destroy();
+hx2.x.PD.add('prinz-ac/NaV', 'gbar', NaV_gbar, 'ac_shift_m', 4, 'ac_shift_h', -4);
+hx2.x.myplot('With prinz-ac, shifts m and h'); 
