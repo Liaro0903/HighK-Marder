@@ -1,6 +1,8 @@
 classdef my_plots
   methods(Static)
     % myplot1 and myplot2 are already added to the path of xolotl
+
+    % my_plot_3 is used for printing traces using subplots
     function my_plot_3(V_1, V_2, size, plot_index, C1_title, C2_title)
       tvec = 0.00001:0.1/1000:length(V_1)/10000;
       tvec = tvec.';
@@ -20,6 +22,7 @@ classdef my_plots
       title(C2_title);
     end
 
+    % my_plot_4 is used for printing traces using tight_subplots
     function my_plot_4(V_AB, V_PD, ha, AB_title, PD_title)
       tvec = 0.00001:0.1/1000:length(V_AB)/10000;
       tvec = tvec.';

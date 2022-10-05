@@ -3,6 +3,19 @@
 classdef AB_multi_traces_sub
 
 methods
+
+  % Constructor
+  % This prints out the traces of AB_multi experiments using the subplot function.
+  % exp_category: the experiment category. For example, "rand" experiments are '', and "rand_high" experiments are 'high'
+  % exp_num: the experiment number, enter integers
+  % plot_numbers: the plot type you want to plot (ranging from 1-4). See f1-f4 functions below. Could be be a matrix.
+  % model_num: the number model you want to print out. Could be a matrix.
+
+  % Sample Run
+  % a = AB_multi_traces_sub('', 1, [2, 3], 7) means printing out the traces of model 7 from AB_multi_rand_1, with 2 subplots on coupled at -80mV and coupled at -56mV. 
+  % a = AB_multi_traces_sub('high', 1, [2], 34:36) means printing out the traces of model 34 to 35 from AB_multi_rand_high_1, with 1 subplot on coupled at -80mV.
+  % see AB_multi_traces_test.m for more examples
+
   function a = AB_multi_traces_sub(exp_category, exp_num, plot_numbers, model_num)
     close all;
     plot_config = [
@@ -69,7 +82,7 @@ methods(Static)
     hx.setKPot(-80);
 
     results_and_spiketimes = hx.x.integrate;
-    my_plots.my_plot_3(results_and_spiketimes.AB.V, results_and_spiketimes.PD.V, size, plot_index, 'ABsn, -80mV, uncoupled', 'ABaxon, -80mV, uncoupled');
+    my_plots.my_plot_3(results_and_spiketimes.ABsn.V, results_and_spiketimes.ABaxon.V, size, plot_index, 'ABsn, -80mV, uncoupled', 'ABaxon, -80mV, uncoupled');
   end
   function f2(hx, size, plot_index)
     base = 110;
@@ -87,7 +100,7 @@ methods(Static)
     hx.setKPot(-56);
 
     results_and_spiketimes = hx.x.integrate;
-    my_plots.my_plot_3(results_and_spiketimes.AB.V, results_and_spiketimes.PD.V, size, plot_index, 'ABsn, -56mV, coupled', 'ABaxon, -56mV, coupled');
+    my_plots.my_plot_3(results_and_spiketimes.ABsn.V, results_and_spiketimes.ABaxon.V, size, plot_index, 'ABsn, -56mV, coupled', 'ABaxon, -56mV, coupled');
   end
   function f4(hx, size, plot_index)
     base = 110;
@@ -95,25 +108,25 @@ methods(Static)
     hx.x.set('ABsn.ElectricalABaxon.gmax', base);
     hx.setKPot(-56);
 
-    % x1.AB.ACurrent.gbar = ;
-    % x1.AB.CaS.gbar      = ;
-    hx.x.AB.CaT.gbar      = 30;
-    % x1.AB.HCurrent.gbar = ;
-    % x1.AB.KCa.gbar      = ;
-    % x1.AB.Kd.gbar       = 2000;
-    % x1.AB.NaV.gbar      = ;
-    % x1.AB.Leak.gbar     = ;
+    % hx.x.ABsn.ACurrent.gbar = ;
+    % hx.x.ABsn.CaS.gbar      = ;
+    % hx.x.ABsn.CaT.gbar      = 30;
+    % hx.x.ABsn.HCurrent.gbar = ;
+    hx.x.ABsn.KCa.gbar      = 300;
+    % hx.x.ABsn.Kd.gbar       = 2000;
+    % hx.x.ABsn.NaV.gbar      = ;
+    % hx.x.ABsn.Leak.gbar     = ;
 
-    % x1.PD.ACurrent.gbar = 500;
-    % x1.PD.CaS.gbar      = 80;
-    % x1.PD.CaT.gbar      = ;
-    % x1.PD.HCurrent.gbar =;
-    hx.x.PD.KCa.gbar      = 400;
-    hx.x.PD.Kd.gbar       = 2100;
-    % x1.PD.NaV.gbar      =;
+    % hx.x.ABaxon.ACurrent.gbar = 500;
+    % hx.x.ABaxon.CaS.gbar      = 80;
+    % hx.x.ABaxon.CaT.gbar      = ;
+    % hx.x.ABaxon.HCurrent.gbar =;
+    % hx.x.ABaxon.KCa.gbar      = 400;
+    % hx.x.ABaxon.Kd.gbar       = 2100;
+    % hx.x.ABaxon.NaV.gbar      =;
 
     results_and_spiketimes = hx.x.integrate;
-    my_plots.my_plot_3(results_and_spiketimes.AB.V, results_and_spiketimes.PD.V, size, plot_index, 'CaT: 87.45→30', 'KCa: 68.54→400, Kd: 2146');
+    my_plots.my_plot_3(results_and_spiketimes.ABsn.V, results_and_spiketimes.ABaxon.V, size, plot_index, 'KCa: 300', 'No Changes');
   end
 end
 

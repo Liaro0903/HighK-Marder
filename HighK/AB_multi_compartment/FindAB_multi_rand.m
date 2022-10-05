@@ -7,6 +7,17 @@ properties
 end
 
 methods
+
+  % Constructor
+  % exp_category: the experiment category. For example, "rand" experiments are '', and "rand_high" experiments are 'high'
+  % exp_num: the experiment number, enter an integer
+  % par_or_sim: choose which methods to run, either parallel or regular simulate. Type either 'par' or 'sim'
+
+  % Sample Run
+  % a = FindAB_multi_rand('', 1, 'sim') means running rand_1 experiment using simulate
+  % a = FindAB_multi_rand('high', 1, 'par') means running rand_high_1 experiment using parallel.
+  % Feel free to comment out parts of criteria to debug.
+
   function a = FindAB_multi_rand(exp_category, exp_num, par_or_sim)
     close all;
     a.p = xfind;
@@ -47,8 +58,8 @@ methods(Static)
     p.SimFcn = @FindAB_multi_rand.criteria_1;
     p.DiscardFcn = @(data) data == 0.0;
   end
-  function setup_high1(hx, p)
-    FindAB_multi_rand.setup_1(hx, p);
+  function hx = setup_high1(p)
+    hx = FindAB_multi_rand.setup_1(p);
     p.SimFcn = @FindAB_multi_rand.criteria_high1;
   end
   function qualifies = criteria_1(x)
