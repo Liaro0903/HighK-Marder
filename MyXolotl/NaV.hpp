@@ -12,8 +12,8 @@
 class NaV: public conductance {
 
 public:
-    double ac_shift_m = 0.0;
-    double ac_shift_h = 0.0;
+    // double ac_shift_m = 0.0;
+    // double ac_shift_h = 0.0;
 
     // specify parameters + initial conditions
     NaV(double gbar_, double E_, double m_, double h_, double ac_shift_m_, double ac_shift_h_)
@@ -37,16 +37,28 @@ public:
         ac_shift_m = ac_shift_m_;
         ac_shift_h = ac_shift_h_;
 
+        AllowMInfApproximation = false;
+        AllowHInfApproximation = false;
+
+        // if (isnan(ac_shift_m)) {
+        //     ac_shift_m = 0;
+        // }
+
     }
 
-    double m_inf(double V, double Ca) {return 1.0/(1.0+exp((V+25.5+ac_shift_m)/-5.29));}
-    double h_inf(double V, double Ca) {return 1.0/(1.0+exp((V+48.9+ac_shift_h)/5.18));}
-    double tau_m(double V, double Ca) {return 2.64 - 2.52/(1+exp((V+120.0)/-25.0));}
-    double tau_h(double V, double Ca) {return (1.34/(1.0+exp((V+62.9)/-10.0)))*(1.5+1.0/(1.0+exp((V+34.9)/3.6)));}
+    double m_inf(double, double);
+    double h_inf(double, double);
+    double tau_m(double, double);
+    double tau_h(double, double);
 
 };
 
-
+double NaV::m_inf(double V, double Ca) {return 1.0/(1.0+exp((V+25.5+ac_shift_m)/-5.29));}
+double NaV::h_inf(double V, double Ca) {return 1.0/(1.0+exp((V+48.9+ac_shift_h)/5.18));}
+double NaV::tau_m(double V, double Ca) {return 2.64 - 2.52/(1+exp((V+120.0)/-25.0));}
+double NaV::tau_h(double V, double Ca) {return (1.34/(1.0+exp((V+62.9)/-10.0)))*(1.5+1.0/(1.0+exp((V+34.9)/3.6)));}
+// double NaV::tau_m(double V, double Ca) {return 2.64 - 2.52/(1+exp((V+120.0+ac_shift_m)/-25.0));}
+// double NaV::tau_h(double V, double Ca) {return (1.34/(1.0+exp((V+62.9+ac_shift_h)/-10.0)))*(1.5+1.0/(1.0+exp((V+34.9+ac_shift_h)/3.6)));}
 
 
 #endif

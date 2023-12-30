@@ -12,7 +12,7 @@
 class KCa: public conductance {
 
 public:
-    double ac_shift_m = 0.0;
+    // double ac_shift_m = 0.0;
 
     // specify parameters + initial conditions
     KCa(double gbar_, double E_, double m_, double ac_shift_m_)
@@ -38,11 +38,14 @@ public:
         
     }
 
-    double m_inf(double V, double Ca) {return (Ca/(Ca+3.0))/(1.0+exp((V+28.3+ac_shift_m)/-12.6)); }
-    double tau_m(double V, double Ca) {return 180.6 - 150.2/(1.0+exp((V+46.0)/-22.7));}
+    double m_inf(double, double);
+    double tau_m(double, double);
 
 };
 
+double KCa::m_inf(double V, double Ca) {return (Ca/(Ca+3.0))/(1.0+exp((V+28.3+ac_shift_m)/-12.6)); }
+double KCa::tau_m(double V, double Ca) {return 180.6 - 150.2/(1.0+exp((V+46.0)/-22.7));}
+// double KCa::tau_m(double V, double Ca) {return 180.6 - 150.2/(1.0+exp((V+46.0+ac_shift_m)/-22.7));}
 
 
 
