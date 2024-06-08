@@ -3,7 +3,7 @@ neuron_test2.m
 .DS_Store
 HighK/.DS_Store
 HighK/ABcoupledPD/data/FindABcPD_rand*/
-HighK/ABPD_ac/data
-HighK/ABPD_ac/r4_recovery_mech/data
-HighK/ABPD_ac/r4_recovery_mech/fig5
-HighK/ABPD_ac/r4_recovery_mech/fig7
+HighK/ABPD_ac/data/
+HighK/ABPD_ac/r4_recovery_mech/data/
+HighK/ABPD_ac/r4_recovery_mech/fig5/
+HighK/ABPD_ac/r4_recovery_mech/fig7/
