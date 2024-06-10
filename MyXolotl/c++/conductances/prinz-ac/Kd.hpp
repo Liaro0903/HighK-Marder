@@ -25,7 +25,7 @@ public:
         // defaults         
         ac_shift_m = ac_shift_m_; 
         if (isnan (ac_shift_m_)) {
-            // E = -80;
+            E = -80;
             ac_shift_m = 0;
         }
 
