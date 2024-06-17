@@ -1,4 +1,4 @@
-% Test file for 
+% Test file for finding the half potention function
 clear; close all;
 
 hx = HKX(10000, -50, 24);
@@ -33,21 +33,20 @@ assert(hp_A2 == -56.9, 'Case failed: expected -56.9');
 hp_A2_shift = findhalfV(hx2.x.PD2.ACurrent, 'h_inf', 3);
 assert(hp_A2_shift == -56.9, 'Case failed: expected -56.9');
 
-% test case on under construction
-% no_h_test_failed = false;
-% try
-%   % attempt to trigger the custom error by passing h_inf on conductance without h_inf
-%   hp_Kd_no_h = findhalfV(hx.x.PD1.Kd, 'm_inf', 3);
-% catch ME
-%   ME
-%   if strcmp(ME.identifier, 'custom:nohWarning')
-%     no_h_test_failed = true;
-%   end
-% end
-% assert(no_h_test_failed == true, 'Test failed: No no-h_inf error thrown');
-
-% testing KCa (requiring Ca_average)
-
+% should be -28.3mV, test for KCa requiring Ca
 hp_KCa = findhalfV(hx.x.PD1.KCa, 'm_inf', 0);
+assert(hp_KCa == -28.3, 'Case failed: hp_KCa expected -28.3');
 
-% hx.x.PD1.Ca_average
+% test case on under construction
+no_h_test_failed = false;
+try
+  % attempt to trigger the custom error by passing h_inf on conductance without h_inf
+  hp_Kd_no_h = findhalfV(hx.x.PD1.Kd, 'h_inf', 3);
+catch ME
+  if strcmp(ME.identifier, 'custom:nohWarning')
+    no_h_test_failed = true;
+  end
+end
+assert(no_h_test_failed == true, 'Test failed: No no-h_inf error thrown');
+
+disp('All tests passed');

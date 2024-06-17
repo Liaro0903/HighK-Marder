@@ -121,23 +121,13 @@ classdef my_plots
     % cond_pair:
     % dm_var_space:
     % all_params: 
-    function ST_matrix = heatmap_ac_shifts(neuron_state, cond_pair, x, dm_var_space, all_params)
+    function [hmap, hp_x, hp_y, cond_gates] = heatmap_ac_shifts(neuron_state, cond_pair, x, dm_var_space, all_params)
       % String truncate
-      conds = strings(1, 2);
-      gates = strings(1, 2);
-      cond_gates = strings(1, 2);
-      for i = 1:length(cond_pair)
-        cond_str = string(cond_pair(i));
-        cond_str = strsplit(cond_str, ".");
-        neuron_name = cond_str(1);
-        conds(i) = cond_str(2);
-        gates(i) = strrep(cond_str(3), 'ac_shift_', '');
-        cond_gates(i) = strcat(strrep(conds(i), 'Current', ''), '.', gates(i));
-      end
+      [neuron_name, conds, gates, cond_gates] = xsplit(cond_pair);
       % debug to see what these values are
       % conds
       % gates
-      % cond_gates
+      % cond_gates 
       
       % Get the ST_matrix
       ST_matrix = NaN(length(dm_var_space), length(dm_var_space));
@@ -147,9 +137,14 @@ classdef my_plots
         ST_matrix(xx, y) = neuron_state(j);
       end
       ST_matrix(ST_matrix < 0) = 0;
+
+      hp_y = findhalfV(x.(neuron_name).(conds(1)), strcat(gates(1), '_inf'), 0);
+      hp_x = findhalfV(x.(neuron_name).(conds(2)), strcat(gates(2), '_inf'), 0);
+      xdata = dm_var_space*-1 + hp_x;
+      ydata = dm_var_space*-1 + hp_y;
     
       % Plot heatmap
-      imagesc(ST_matrix, 'AlphaData', ~isnan(ST_matrix));
+      hmap = imagesc(xdata, ydata, ST_matrix, 'AlphaData', ~isnan(ST_matrix));
       % c_map = [42 45 108; 59 130 81; 157 106 53] ./ 255; % blue, green, brown
       % c_map = [61, 133, 198; 147, 196, 125; 234, 153, 153] / 255; % darker blue, lighter green, light red
       c_map = [183, 183, 183; 220, 124, 40; 74, 153, 249] / 255; % gray, orange, blue
@@ -157,30 +152,38 @@ classdef my_plots
       caxis([0 2]);
 
       % Label and plot axes
-      [L, loc] = axlib.makeTickLabels(dm_var_space, 25); 
-      hp_y = findhalfV(x.(neuron_name).(conds(1)), strcat(gates(1), '_inf'), 0);
+      [L, loc] = axlib.makeTickLabels(ydata, 25); 
       for l = 1:length(L)
-        L{l} = num2str(str2double(L{l})*-1 + hp_y);
+        loc(l) = str2double(L{l});
       end
+      L = fliplr(L);
+      loc = fliplr(loc);
       set(gca,'YTick', loc, 'YTickLabels', L)
  
-      [L, loc] = axlib.makeTickLabels(dm_var_space, 25); 
-      hp_x = findhalfV(x.(neuron_name).(conds(2)), strcat(gates(2), '_inf'), 0);
+      [L, loc] = axlib.makeTickLabels(xdata, 25); 
       for l = 1:length(L)
-        L{l} = num2str(str2double(L{l})*-1 + hp_x);
+        loc(l) = str2double(L{l});
       end
+      L = fliplr(L);
+      loc = fliplr(loc);
       set(gca,'XTick', loc, 'XTickLabels', L);
 
       hold on;
-      plot([0,101], [51,51], '--w');
-      plot([51,51], [0,101], '--w');
-      scatter(51, 51, 120, 'k', 'filled');
+      plot([hp_x-50, hp_x+50], [hp_y, hp_y], '--w');
+      plot([hp_x, hp_x], [hp_y-50, hp_y+50], '--w');
+      dot_o = scatter(hp_x, hp_y, 120, 'k', 'filled');
+      rowx = dataTipTextRow(cond_gates(2), 'XData');
+      rowy = dataTipTextRow(cond_gates(1), 'YData');
+      dot_o.DataTipTemplate.DataTipRows(2) = rowx;
+      dot_o.DataTipTemplate.DataTipRows(1) = rowy;
+      dot_o.DataTipTemplate.DataTipRows(3) = [];
+      set(dot_o, 'ButtonDownFcn', @(src, event) datatipcallback(event, dot_o));
 
       ylabel(strcat("V_{1/2 ", cond_gates(1), '} (mV)'));
       xlabel(strcat("V_{1/2 ", cond_gates(2), '} (mV)'));
       title(strcat(cond_gates(1), "-", cond_gates(2)));
-      % axis xy
-      set(gca,'xdir','reverse')
+      axis xy
+      % set(gca,'xdir','reverse')
       axis square
       % colorbar('northoutside'); 
     end
@@ -191,19 +194,20 @@ classdef my_plots
     % ac_shifts
     % plot_hp: boolean
     % might still need some final touches
-    function Y = plot_ac(cond, Vrange, x_inf, ac_shifts, plot_hp, Ca_average)
+    function Y = plot_ac(cond, Vrange, x_inf, ac_shifts, plot_hp)
       num_ac_shifts = length(ac_shifts);
       Y = ones(1000, num_ac_shifts);
       V = linspace(Vrange(1), Vrange(2), 1e3);
-      if (nargin < 6)
-        Ca_average = 0;
-      end
-      Ca = Ca_average * ones(1, 1e3);
+      % if (nargin < 6)
+      %   Ca_average = 0;
+      % end
+      % Ca = Ca_average * ones(1, 1e3);
+      Ca = realmax * ones(1, 1e3);
       hps = ones(1, num_ac_shifts);
 
       % Calculate halfV and Y
       for ac_shift = 1:length(ac_shifts)
-        [hp, x_inf_f] = findhalfV(cond, x_inf, ac_shifts(ac_shift), Ca_average);
+        [hp, x_inf_f] = findhalfV(cond, x_inf, ac_shifts(ac_shift));
         hps(ac_shift) = hp;
         Y(:, ac_shift) = x_inf_f(V, Ca);
       end
@@ -220,53 +224,24 @@ classdef my_plots
       C = {'k', 'r'};
       
       for ac_shift = 1:length(ac_shifts)
-        % plot(V, Y(:, ac_shift), 'Color', C(ac_shift, :), 'LineWidth', 2);
         plot(V, Y(:, ac_shift), 'Color', C{ac_shift}, 'LineWidth', 2);
+        set(gca,'YTick', [0, 0.2, 0.4, 0.6, 0.8, 1]);
         hold on;
         plot(hps(ac_shift), 0.5, 'o', 'MarkerSize', 8, 'MarkerFaceColor', [0.5 0.5 0.5], 'MarkerEdgeColor', [0.5 0.5 0.5], 'LineWidth', 1);
       end
 
+      gate = char(x_inf);
+      gate = gate(1);
+      cond_name = cond.cpp_class_name;
+      cond_name = strcat(strrep(cond_name, 'Current', ''), '.', gate);
       axis square;
       box off;
+      xlabel('Voltage (mV)');
+      ylabel([gate '_{∞}']);
       xlim(Vrange);
       ylim([0, 1]);
-
+      title(cond_name);
+      legend({'', 'Control', '', 'Late High [K^+]'}, 'Location', 'northeast');
     end
-    % function [V, Y_m, Y_h, hps] = plot_ac(Vrange, target_cond)
-    %   Vrange = [-60 -10; -60 30;]; % KCa, Kd, A.h, CaS
-    %   Y_m = ones(1000, 2);
-    %   hp = ones(1, 2);
-    %   V = linspace(Vrange(param_idx, 1), Vrange(param_idx, 2), 1e3);
-    %   [m_inf, h_inf] = hx.x.PD.KCa.cpp_child_functions.fun_handle; % h_inf are h_inf when the channel has h, or else it will be assigned to tau_m
-    %   m_inf = func2str(m_inf);
-    %   Ca = hx.x.PD.Ca_average * ones(1, 1e3);
-    %   % calcualte Y
-    %   m_inf_f = regexprep(m_inf, '\w+_\w+_\w', num2str(ac_shift_m * ac_shift_mag(param_idx, 1, model)));
-    %   m_inf_f = strrep(m_inf_f, '/', './');
-    %   m_inf_f = str2func(m_inf_f);
-    %   Y(:, ac_shift_m+1) = m_inf_f(V, Ca);
-  
-    %   hp(ac_shift_m+1) = double(S);
-    
-    %   % Plot area between half potentials
-    %   a = area(hp, [1 1]);
-    %   a(1).FaceColor = [0.9 0.9 0.9];
-    %   a(1).EdgeColor = [0.9 0.9 0.9];
-    %   hold on;
-    
-    %   C = get(groot, 'DefaultAxesColorOrder');
-    
-    %   for c = 1:length(hp)
-    %     % Plot activation curves
-    %     plot(V, Y(:, c), 'Color', C(c, :), 'LineWidth', 2);
-    
-    %     % Plot half potential value vertical lines
-    %     % Y_hp = linspace(0, 1, 100);
-    %     % S = hp(c) * ones(1, 100);
-    %     % plot(S, Y_hp, '.', 'Color', [0.5 0.5 0.5]);
-    %     hold on;
-        % plot(hp(c), 0.5, 'o', 'MarkerSize', 8, 'MarkerFaceColor', [0.5 0.5 0.5], 'MarkerEdgeColor', [0.5 0.5 0.5], 'LineWidth', 1);
-    %   end
-    % end
   end
 end

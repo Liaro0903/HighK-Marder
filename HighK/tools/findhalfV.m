@@ -20,17 +20,17 @@ function [halfV, x_inf_f] = findhalfV(cond, x_inf, ac_shift) % maybe add Ca_aver
   x_inf_f = regexprep(x_inf, '\w+_\w+_\w', num2str(ac_shift)); % replace ac_shift with actual value
   x_inf_f = strrep(x_inf_f, '/', './');
 
-  % check if function requires Ca_average
-  Ca_occurrences = length(strfind(x_inf_f, "Ca"));
+  % check if function requires Ca_average, not used for the moment
+  % Ca_occurrences = length(strfind(x_inf_f, "Ca"));
   % if (Ca_occurrences > 1 && nargin < 4)
   %   warning('error', 'custom:needCa');
   %   warning('custom:needCa', 'This conductance requires Ca_average');
   % end
-  if (Ca_occurrences == 1)
-    Ca_average = 0;
-  else
-    Ca_average = realmax;
-  end
+  % if (Ca_occurrences == 1)
+  %   Ca_average = 0;
+  % else
+  %   Ca_average = realmax;
+  % end
 
   x_inf_f = str2func(x_inf_f); % convert string back to function
 
@@ -39,7 +39,7 @@ function [halfV, x_inf_f] = findhalfV(cond, x_inf, ac_shift) % maybe add Ca_aver
 
   % use math to find out half potential value
   syms x y;
-  x_inf_symbolic = symfun(x_inf_f(x, Ca_average), [x, y]);
+  x_inf_symbolic = symfun(x_inf_f(x, realmax), [x, y]);
   eqn = x_inf_symbolic == 0.5;
   S = solve(eqn, x);
   halfV = double(S);

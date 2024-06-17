@@ -28,13 +28,13 @@ dm_var2_space = linspace(-30, 30, resolution);
 [X, Y] = meshgrid(dm_var1_space, dm_var2_space);
 all_params = [X(:), Y(:)]';
 % load('r4_fig7_data.mat');
-% load('r4_fig7_data_highres.mat');
-load('r4_fig7_data_highres_ctrl1-25.mat');
+load('r4_fig7_data_highres.mat');
 
 figure('outerposition',[0 0 1800 1200],'PaperUnits','points','PaperSize',[1800 1200]); hold on
 tiledlayout(4, 7, 'TileSpacing', 'compact', 'Padding', 'compact');
 
-c_map = [42 45 108; 59 130 81; 157 106 53] ./ 255; % blue, green, brown
+% c_map = [42 45 108; 59 130 81; 157 106 53] ./ 255; % blue, green, brown
+c_map = [183, 183, 183; 220, 124, 40; 74, 153, 249] / 255; % gray, orange, blue
 
 for i = 1:28
 % for i = 29:55

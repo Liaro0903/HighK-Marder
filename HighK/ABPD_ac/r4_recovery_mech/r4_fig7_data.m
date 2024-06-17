@@ -1,21 +1,19 @@
-% clear; close all;
+clear; close all;
+cluster = parcluster;
+parpool('local', cluster.NumWorkers);
+disp(['Will start parfor with ' num2str(cluster.NumWorkers) ' workers']);
 
-%% args
+%% Script params to play around
 load_data = false; % you can load some data and generate others
-
+model = 1;
+model_str = ['m' num2str(model)];
 Ek = -80;
 if Ek == -80
   Ek_str = 'ctrl';
 else
   Ek_str = 'high';
 end
-
-% resolution = 31;
-resolution = 101;
-
-%% Script params to play around
-model = 1;
-model_str = ['m' num2str(model)];
+resolution = 101; % or 31
 
 %% Global variables
 hx = HKX(10000, -50, 24);
@@ -57,19 +55,8 @@ for i = 26:55
   % n_spikes_per_burst = NaN(length(all_params), 1);
   % ibi_mean = NaN(length(all_params), 1);
 
-  cut_str_idx_1 = strfind(cond_pairs{i, 1}, "ac_shift_");
-  cut_str_idx_2 = strfind(cond_pairs{i, 2}, "ac_shift_");
-  cond1 = [cond_pairs{i, 1}(4:cut_str_idx_1-1) cond_pairs{i, 1}(cut_str_idx_1+strlength("ac_shift_"):end)];
-  cond2 = [cond_pairs{i, 2}(4:cut_str_idx_2-1) cond_pairs{i, 2}(cut_str_idx_2+strlength("ac_shift_"):end)];
-  if (contains(cond1, 'Current'))
-    cut_str_idx_1 = strfind(cond1, "Current");
-    cond1 = [cond1(1:cut_str_idx_1-1) cond1(cut_str_idx_1+strlength("Current"):end)];
-  end
-  if (contains(cond2, 'Current'))
-    cut_str_idx_2 = strfind(cond2, "Current");
-    cond2 = [cond2(1:cut_str_idx_2-1) cond2(cut_str_idx_2+strlength("Current"):end)];
-  end
-  disp([cond1 cond2]);
+  [~, ~, ~, cond_gates] = xsplit(cond_pairs(i, :));
+  disp(strcat(cond_gates(1), "-", cond_gates(2)));
 
   % uncomment to save individual plots
   % dir_title = ['./fig7/' num2str(model) filesep Ek_str filesep cond1 '-' cond2 filesep];
@@ -81,7 +68,7 @@ for i = 26:55
   parfor j = 1:length(all_params)
   % for j = 190:210
     hx1 = hx.copyHKX();
-    hx1.x.set({cond_pairs{i, 1}, cond_pairs{i, 2}}, all_params(:, j));
+    hx1.x.set(cond_pairs(i, :), all_params(:, j));
  
     results_and_spiketimes = hx1.x.integrate;
     PD_V = results_and_spiketimes.PD.V;
@@ -122,4 +109,5 @@ end
 
 neuron_states.(model_str).(Ek_str) = ns;
 
-save('r4_fig7_data_highres_ctrl26-55', 'neuron_states');
+% save('r4_fig7_data_highres.mat', 'neuron_states');
+delete(gcp('nocreate'));
