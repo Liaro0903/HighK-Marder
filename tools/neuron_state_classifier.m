@@ -1,6 +1,6 @@
 % A classfier I wrote in 2023.12.29. Can compare to other classifiers that I wrote before.
 
-function [metrics, class] = classifier_2312(V)
+function [metrics, class] = neuron_state_classifier(V)
 
 metrics = xtools.V2metrics(V((length(V) / 2) : end));
 
