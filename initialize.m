@@ -20,7 +20,7 @@ function initialize_recursive(relative_path)
   sub_dirs = {dir_data(dir_idx).name};  % List of subdirectories
   sub_dirs = sub_dirs(~ismember(sub_dirs, {'.', '..'})); % Get rid of . ..
 
-  destination = [xolotl_toolbox_path strrep(relative_path, 'MyXolotl', '')]; % get rid of the 'MyXolotl' part in the relative path first
+  destination = [xolotl_toolbox_path strrep(relative_path, 'xolotl_highK_files', '')]; % get rid of the 'xolotl_highK_files' part in the relative path first
 
   if ~isfolder(destination) % if folder does not exist, create one
     mkdir(destination);
