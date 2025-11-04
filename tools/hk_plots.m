@@ -137,7 +137,7 @@ classdef hk_plots
       xlim(Vrange);
       ylim([0, 1]);
       title(cond_name);
-      legend(lines, legend_titles, 'Location', 'northeast');
+      legend(lines, legend_titles, 'Location', 'best');
     end
 
     % Description: function to plot the currentscape. Colors, plot_sum are features not in the xolotl currentscape
